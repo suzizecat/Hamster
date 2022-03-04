@@ -1,0 +1,11 @@
+.vscode/
+.env
+*.log
+sim_build/
+__pycache__
+*.fst
+*.vcd
+results.xml
+
+log/
+synth/
