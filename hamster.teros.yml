@@ -1,0 +1,41 @@
+toplevel: core_top
+name: hamster
+files: 
+  - name: "peripherals/motor/rtl/encoder_reader.sv"
+    file_type: systemVerilogSource
+    is_include_file: false
+    include_path: ""
+    logical_name: motor
+  - name: "peripherals/motor/rtl/motor_control_top.sv"
+    file_type: systemVerilogSource
+    is_include_file: false
+    include_path: ""
+    logical_name: motor
+  - name: "peripherals/motor/rtl/pattern_generator.sv"
+    file_type: systemVerilogSource
+    is_include_file: false
+    include_path: ""
+    logical_name: motor
+  - name: "peripherals/pwm/rtl/pwm_capture.sv"
+    file_type: systemVerilogSource
+    is_include_file: false
+    include_path: ""
+    logical_name: pwm
+  - name: "phy/hamster.py"
+    file_type: python
+    is_include_file: false
+    include_path: ""
+    logical_name: ""
+  - name: "peripherals/top/rtl/channel_decoder.sv"
+    file_type: systemVerilogSource
+    is_include_file: false
+    include_path: ""
+    logical_name: top
+  - name: "peripherals/top/rtl/core_top.sv"
+    file_type: systemVerilogSource
+    is_include_file: false
+    include_path: ""
+    logical_name: top
+tool_options: 
+  cocotb: 
+    installation_path: ""
