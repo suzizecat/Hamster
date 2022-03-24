@@ -4,9 +4,10 @@ from cocotb.clock import Clock
 from cocotb.handle import HierarchyObject, ModifiableObject
 from cocotb.triggers import ClockCycles, FallingEdge, Join, RisingEdge, Timer
 
-from models import SPIDriver
-from models import SPITransaction
-from models import SPIHeader
+from models.spi_driver import SPIDriver
+from models.spi_transactions import SPITransaction
+from models.spi_transactions import SPIHeader
+from models.spi_monitor import SPIMonitor
 
 def full_reset(dut):
     dut.i_clk.value = 0     
@@ -85,7 +86,14 @@ async def test_spi(dut : HierarchyObject):
     spi.csn  = dut.i_cs_n
     spi.sclk = dut.i_spi_clk
 
-    tr_read_test = SPITransaction(SPIHeader(address=0x5A),length=1)
+    mon = SPIMonitor()
+    mon.miso = dut.o_miso
+    mon.mosi = dut.i_mosi
+    mon.csn  = dut.i_cs_n
+    mon.sclk = dut.i_spi_clk
+    mon.start_checkers()
+
+    tr_read_test = SPITransaction(SPIHeader(address=0xA9),length=1)
 
     spi.transactions.append(tr_read_test)
   
@@ -94,7 +102,7 @@ async def test_spi(dut : HierarchyObject):
     await spi.process_next_transaction()
     dut.o_miso._log.info(f"Result is   {spi.transactions_done[-1].str_result}")
 
-
+    mon.stop_checkers()
     await Timer(1,"us")
 
 @cocotb.test()
@@ -109,12 +117,21 @@ async def test_spi_read_all(dut : HierarchyObject):
     await RisingEdge(dut.i_clk)
 
     spi = SPIDriver()
+    
     spi.miso = dut.o_miso
     spi.mosi = dut.i_mosi
     spi.csn  = dut.i_cs_n
     spi.sclk = dut.i_spi_clk
 
-    tr_read_test = SPITransaction(SPIHeader(address=0x00),length=0x5B)
+    mon = SPIMonitor()
+    mon.miso = dut.o_miso
+    mon.mosi = dut.i_mosi
+    mon.csn  = dut.i_cs_n
+    mon.sclk = dut.i_spi_clk
+    mon.start_checkers()
+
+
+    tr_read_test = SPITransaction(SPIHeader(address=0x00),length=0xA9 + 1)
 
     spi.transactions.append(tr_read_test)
     while len(spi.transactions) :
@@ -123,6 +140,6 @@ async def test_spi_read_all(dut : HierarchyObject):
         await spi.process_next_transaction()
         dut.o_miso._log.info(f"Result is   {spi.transactions_done[-1].str_result}")
 
-
+    mon.stop_checkers()
     await Timer(1,"us")
 

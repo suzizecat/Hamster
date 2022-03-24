@@ -15,9 +15,9 @@ else
 	VERILOG_SOURCES += $(SRC_PATH)/peripherals/motor/rtl/pattern_generator.sv
 	VERILOG_SOURCES += $(SRC_PATH)/peripherals/regbank/rtl/reg_rdchan_if.sv
 	VERILOG_SOURCES += $(SRC_PATH)/peripherals/regbank/rtl/reg_wrchan_if.sv
-	VERILOG_SOURCES += $(SRC_PATH)/peripherals/regbank/rtl/regbk_regbank_in_if.sv
-	VERILOG_SOURCES += $(SRC_PATH)/peripherals/regbank/rtl/regbk_regbank_out_if.sv
-	VERILOG_SOURCES += $(SRC_PATH)/peripherals/regbank/rtl/regbk_regbank.sv
+	VERILOG_SOURCES += $(SRC_PATH)/peripherals/regbank/rtl/hamster_regbank_in_if.sv
+	VERILOG_SOURCES += $(SRC_PATH)/peripherals/regbank/rtl/hamster_regbank_out_if.sv
+	VERILOG_SOURCES += $(SRC_PATH)/peripherals/regbank/rtl/hamster_regbank.sv
 	VERILOG_SOURCES += $(SRC_PATH)/peripherals/pwm/rtl/pwm_gen_left.sv
 	VERILOG_SOURCES += $(SRC_PATH)/peripherals/pwm/rtl/pwm_capture.sv
 	VERILOG_SOURCES += $(SRC_PATH)/peripherals/spi/rtl/spi_slave.sv

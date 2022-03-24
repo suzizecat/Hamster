@@ -1,6 +1,6 @@
 /* regbank out interface - file automatically generated - do not modify */
 
-interface regbk_regbank_out_if;
+interface hamster_regbank_out_if;
     logic [ 1: 0] RADIOCFGR_DIR_CHAN;
     logic [ 1: 0] RADIOCFGR_PWR_CHAN;
     logic [ 1: 0] RADIOCFGR_REV_CHAN;
@@ -77,4 +77,4 @@ modport master (
     output MOT2CR_PWR_ALL,
     output MOT2PWM_MAX
 );
-endinterface : regbk_regbank_out_if
+endinterface : hamster_regbank_out_if

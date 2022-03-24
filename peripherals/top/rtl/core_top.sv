@@ -25,9 +25,9 @@ module core_top (
 	localparam int REG_AWIDTH = 8 ;
 	localparam int K_NCHAN    = 4 ;
 
-	regbk_regbank_out_if regbank_out ();
+	hamster_regbank_out_if regbank_out ();
 
-	regbk_regbank_in_if regbank_in ();
+	hamster_regbank_in_if regbank_in ();
 
 	reg_wrchan_if #(
 		.K_DWIDTH(REG_DWIDTH),
@@ -107,7 +107,7 @@ module core_top (
 	assign regbank_in.COMPTEST_COMP_TEST = 16'hCAFE;
 
 
-	regbk_regbank u_regbank (
+	hamster_regbank u_regbank (
 		.i_clk          (i_clk      ),
 		.i_rst_n        (i_rst_n    ),
 		.sif_reg_wrchan (spi_rb_wr  ),

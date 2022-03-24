@@ -1,11 +1,18 @@
 /* registers bank design - file automatically generated - do not modify */
 
-// Generated on 2022-01-24
+//-----------------------------------------------------------------------------
+//    this confidential and proprietary file may be used only as authorized
+//                 by a licensing agreement from EASii IC sas
+//                       Copyright 2022 EASii IC SAS
+//                    legal statement: all rights reserved
+//     the entire notice above must be reproduced on all authorized copies
+//-----------------------------------------------------------------------------
+// Generated on 2022-03-22
 //-----------------------------------------------------------------------------
 
 // ----------------------------------------------------------------------------
 
-`include "regbk_regs_map.svh"
+`include "hamster_regs_map.svh"
 
 //! 
 //! # COMPID
@@ -108,23 +115,23 @@
 //! 
 //! 
 //! # COMPTEST
-//! - Offset : 0x5A
+//! - Offset : 0xA9
 //! {reg:[{name:'COMPTEST_COMP_TEST',bits:16,attr:['RO']}],config:{bits:16,fontsize:9.0,vspace:70,margin:{top:15,bottom:15}}}
 //! //! 
 //! # COMPTEST
-//! - Offset : 0x5A
+//! - Offset : 0xA9
 //! {reg:[{name:'COMPTEST_COMP_TEST',bits:16,attr:['RO']}],config:{bits:16,fontsize:9.0,vspace:70,margin:{top:15,bottom:15}}}
 //! 
-module regbk_regbank (
+module hamster_regbank (
   input logic                           i_clk,
   input logic                           i_rst_n,
   // Register interface
   reg_wrchan_if.slave                   sif_reg_wrchan,
   reg_rdchan_if.slave                   sif_reg_rdchan,
   // Recorded signals
-  regbk_regbank_in_if.slave  sif_regbank_in,
+  hamster_regbank_in_if.slave  sif_regbank_in,
   // Registers outputs
-  regbk_regbank_out_if.master mif_regbank_out
+  hamster_regbank_out_if.master mif_regbank_out
 );
 
 genvar                    i;

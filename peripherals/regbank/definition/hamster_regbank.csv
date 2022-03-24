@@ -1,5 +1,5 @@
 ,,,,,,,
-,register bank prefix,regbk_,,,,,
+,register bank prefix,hamster_,,,,,
 ,register size,16,,,,,
 ,address bus size,8,,,,,
 ,Register name,Address Offset,Register reset value,Bits,Field name,Access,Comment
@@ -35,4 +35,4 @@
 ,,,,,,,
 ,MOT2PWM,0x0A,0x100,9:0,MAX,RW,Motor2 PWM
 ,,,,,,,
-,COMPTEST,0x5A,0xCAFE,15:0,COMP_TEST,RO,
+,COMPTEST,0xA9,0xCAFE,15:0,COMP_TEST,RO,
