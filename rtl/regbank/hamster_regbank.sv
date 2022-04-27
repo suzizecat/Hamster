@@ -1,17 +1,5 @@
 /* registers bank design - file automatically generated - do not modify */
 
-//-----------------------------------------------------------------------------
-//    this confidential and proprietary file may be used only as authorized
-//                 by a licensing agreement from EASii IC sas
-//                       Copyright 2022 EASii IC SAS
-//                    legal statement: all rights reserved
-//     the entire notice above must be reproduced on all authorized copies
-//-----------------------------------------------------------------------------
-// Generated on 2022-03-22
-//-----------------------------------------------------------------------------
-
-// ----------------------------------------------------------------------------
-
 `include "hamster_regs_map.svh"
 
 //! 
