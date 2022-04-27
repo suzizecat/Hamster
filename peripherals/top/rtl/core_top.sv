@@ -39,8 +39,9 @@ module core_top (
 		.K_AWIDTH(REG_AWIDTH)
 	) spi_rb_rd ();
 
-	logic [K_NCHAN-1:0][PWM_RES-1:0] radio_deadzones;
-	logic [K_NCHAN-1:0]              radio_pol      ;
+	logic [K_NCHAN-1:0][$clog2(K_NCHAN)-1:0] radio_route    ;
+	logic [K_NCHAN-1:0][        PWM_RES-1:0] radio_deadzones;
+	logic [K_NCHAN-1:0]                      radio_pol      ;
 
 	logic [15:0] spi_miso_data ;
 	logic [15:0] spi_mosi_data ;
@@ -64,6 +65,13 @@ module core_top (
 		PWM_RES'(regbank_out.RADIO2DEAD_VAL),
 		PWM_RES'(regbank_out.RADIO3DEAD_VAL),
 		PWM_RES'(regbank_out.RADIO4DEAD_VAL)
+	};
+
+	assign radio_route = {
+		regbank_out.RADIOCFGR_OTHER_CHAN,
+		regbank_out.RADIOCFGR_REV_CHAN,
+		regbank_out.RADIOCFGR_PWR_CHAN,
+		regbank_out.RADIOCFGR_DIR_CHAN
 	};
 
 	assign radio_pol = {
@@ -121,19 +129,20 @@ module core_top (
 		.K_NCHAN(4      ),
 		.K_RES  (PWM_RES)
 	) u_channel_decode (
-		.i_clk      (i_clk             ),
-		.i_rst_n    (i_rst_n           ),
-		.i_channels (i_channels        ),
-		.i_deadzone (radio_deadzones[0]),
-		.i_timebase (i_clk             ),
-		.i_polarity (radio_pol         ),
-		.o_boost    (cmd_boost         ),
-		.o_beep     (cmd_beep          ),
-		.o_rev      (cmd_rev           ),
-		.o_brake    (cmd_brake         ),
-		.o_direction(cmd_direction     ),
-		.o_steer    (cmd_steer         ),
-		.o_power    (cmd_power         )
+		.i_clk       (i_clk             ),
+		.i_rst_n     (i_rst_n           ),
+		.i_chan_route(radio_route                  ),
+		.i_channels  (i_channels        ),
+		.i_deadzone  (radio_deadzones[0]),
+		.i_timebase  (i_clk             ),
+		.i_polarity  (radio_pol         ),
+		.o_boost     (cmd_boost         ),
+		.o_beep      (cmd_beep          ),
+		.o_rev       (cmd_rev           ),
+		.o_brake     (cmd_brake         ),
+		.o_direction (cmd_direction     ),
+		.o_steer     (cmd_steer         ),
+		.o_power     (cmd_power         )
 	);
 
 	motor_control_top #(.K_PWMRES(PWM_RES)) u_mot_1 (

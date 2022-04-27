@@ -106,6 +106,42 @@ async def test_spi(dut : HierarchyObject):
     await Timer(1,"us")
 
 @cocotb.test()
+async def test_change_radiocfgr(dut : HierarchyObject):
+    clk = Clock(dut.i_clk,100,"ns")
+
+    full_reset(dut)
+    await Timer(280,"ns")
+    cocotb.fork(clk.start())
+    await Timer(330,"ns")
+    dut.i_rst_n.value = 1
+    await RisingEdge(dut.i_clk)
+
+    spi = SPIDriver()
+    spi.miso = dut.o_miso
+    spi.mosi = dut.i_mosi
+    spi.csn  = dut.i_cs_n
+    spi.sclk = dut.i_spi_clk
+
+    mon = SPIMonitor()
+    mon.miso = dut.o_miso
+    mon.mosi = dut.i_mosi
+    mon.csn  = dut.i_cs_n
+    mon.sclk = dut.i_spi_clk
+    mon.start_checkers()
+
+    tr_write_radiocfgr = SPITransaction(SPIHeader(command=SPIHeader.WRITE, address=0x1),data=[0x0312])
+
+    spi.transactions.append(tr_write_radiocfgr)
+  
+    dut.i_mosi._log.info(f"SPI Command {str(spi.transactions[0].header)}")
+    dut.i_mosi._log.info(f"Sending SPI {str(spi.transactions[0])}")
+    await spi.process_next_transaction()
+    dut.o_miso._log.info(f"Result is   {spi.transactions_done[-1].str_result}")
+
+    mon.stop_checkers()
+    await Timer(1,"us")
+
+@cocotb.test()
 async def test_spi_read_all(dut : HierarchyObject):
     clk = Clock(dut.i_clk,100,"ns")
 

@@ -2,29 +2,39 @@ module channels_decoder #(
 	parameter int K_NCHAN = 4 ,
 	parameter int K_RES   = 10
 ) (
-	input  logic               i_clk      , //!
-	input  logic               i_rst_n    , //!
+	input  logic                                    i_clk       , //!
+	input  logic                                    i_rst_n     , //!
 	//Inputs
-	input  logic [K_NCHAN-1:0] i_channels , //!
-	input  logic [  K_RES-1:0] i_deadzone , //!
-	input  logic               i_timebase , //!
-	input  logic [K_NCHAN-1:0] i_polarity , //!
+	input  logic [K_NCHAN-1:0][$clog2(K_NCHAN)-1:0] i_chan_route, //!
+	input  logic [K_NCHAN-1:0]                      i_channels  , //!
+	input  logic [  K_RES-1:0]                      i_deadzone  , //!
+	input  logic                                    i_timebase  , //!
+	input  logic [K_NCHAN-1:0]                      i_polarity  , //!
 	//Digital outputs
-	output logic               o_boost    , //!
-	output logic               o_beep     , //!
-	output logic               o_rev      , //!
-	output logic               o_brake    , //!
-	output logic               o_direction, //!
+	output logic                                    o_boost     , //!
+	output logic                                    o_beep      , //!
+	output logic                                    o_rev       , //!
+	output logic                                    o_brake     , //!
+	output logic                                    o_direction , //!
 	// Analog values
-	output logic [  K_RES-1:0] o_steer    ,
-	output logic [  K_RES-1:0] o_power      //!
+	output logic [  K_RES-1:0]                      o_steer     ,
+	output logic [  K_RES-1:0]                      o_power       //!
 );
 
-	localparam K_CHAN_DIRECTION = 0;
-	localparam K_CHAN_POWER     = 1;
-	localparam K_CHAN_REV       = 2;
-	localparam K_CHAN_OTHER     = 3; //! pos = boost, neg = beep
+	localparam int K_CHAN_DIRECTION = 0;
+	localparam int K_CHAN_POWER     = 1;
+	localparam int K_CHAN_REV       = 2;
+	localparam int K_CHAN_OTHER     = 3; //! pos = boost, neg = beep
 
+	logic [$clog2(K_NCHAN)-1:0] direction_selection;
+	logic [$clog2(K_NCHAN)-1:0] power_selection    ;
+	logic [$clog2(K_NCHAN)-1:0] rev_selection      ;
+	logic [$clog2(K_NCHAN)-1:0] other_selection    ;
+
+	assign direction_selection = i_chan_route[K_CHAN_DIRECTION];
+	assign power_selection     = i_chan_route[K_CHAN_POWER];
+	assign rev_selection       = i_chan_route[K_CHAN_REV];
+	assign other_selection     = i_chan_route[K_CHAN_OTHER];
 
 	logic [K_NCHAN-1:0][K_RES-1:0] analog_values ;
 	logic [K_NCHAN-1:0]            dig_values_pos;
@@ -67,21 +77,21 @@ module channels_decoder #(
 			o_rev       <= 0;
 			o_steer     <= 0;
 		end else begin
-            if (capture_done[K_CHAN_POWER]) begin
-                o_power <= analog_values[K_CHAN_POWER];
-                o_brake <= i_polarity[K_CHAN_POWER] ? dig_values_neg[K_CHAN_POWER] : dig_values_pos[K_CHAN_POWER];
-            end
-            if (capture_done[K_CHAN_DIRECTION]) begin
-                o_steer <= analog_values[K_CHAN_DIRECTION];
-                o_direction <= analog_values[K_CHAN_DIRECTION][K_RES-1] ^ i_polarity[K_CHAN_DIRECTION] ;
-            end
-            if(capture_done[K_CHAN_REV]) begin
-                o_rev <= (~i_polarity[K_CHAN_REV]) ? dig_values_neg[K_CHAN_REV] : dig_values_pos[K_CHAN_REV];
-            end
-            if(capture_done[K_CHAN_OTHER]) begin
-                o_beep      <= (i_polarity[K_CHAN_OTHER]) ? dig_values_neg[K_CHAN_OTHER] : dig_values_pos[K_CHAN_OTHER];;
-                o_boost     <= (~i_polarity[K_CHAN_OTHER]) ? dig_values_neg[K_CHAN_OTHER] : dig_values_pos[K_CHAN_OTHER];;
-            end
+			if (capture_done[power_selection]) begin
+				o_power <= analog_values[power_selection];
+				o_brake <= i_polarity[power_selection] ? dig_values_neg[power_selection] : dig_values_pos[power_selection];
+			end
+			if (capture_done[direction_selection]) begin
+				o_steer     <= analog_values[direction_selection];
+				o_direction <= analog_values[direction_selection][K_RES-1] ^ i_polarity[direction_selection] ;
+			end
+			if(capture_done[rev_selection]) begin
+				o_rev <= (~i_polarity[rev_selection]) ? dig_values_neg[rev_selection] : dig_values_pos[rev_selection];
+			end
+			if(capture_done[other_selection]) begin
+				o_beep  <= (i_polarity[other_selection]) ? dig_values_neg[other_selection] : dig_values_pos[other_selection];;
+				o_boost <= (~i_polarity[other_selection]) ? dig_values_neg[other_selection] : dig_values_pos[other_selection];;
+			end
 		end
 	end
 

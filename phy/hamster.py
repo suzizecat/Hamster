@@ -13,9 +13,9 @@ def main():
 
         "peripherals/regbank/rtl/reg_rdchan_if.sv",
         "peripherals/regbank/rtl/reg_wrchan_if.sv",
-        "peripherals/regbank/rtl/regbk_regbank_in_if.sv",
-        "peripherals/regbank/rtl/regbk_regbank_out_if.sv",
-        "peripherals/regbank/rtl/regbk_regbank.sv",
+        "peripherals/regbank/rtl/hamster_regbank_in_if.sv",
+        "peripherals/regbank/rtl/hamster_regbank_out_if.sv",
+        "peripherals/regbank/rtl/hamster_regbank.sv",
         
         "peripherals/pwm/rtl/pwm_gen_left.sv",
         "peripherals/pwm/rtl/pwm_capture.sv",
