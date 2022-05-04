@@ -1,8 +1,11 @@
+from re import I
+from click import launch
 from cocotb.triggers import Timer
 import pyuvm
 from pyuvm import *
 from cocotb import top
-
+from cocotb.triggers import RisingEdge
+from .spi_item import SPI_Item
 import vipy
 from vipy.bus.base import SerialMode
 
@@ -22,17 +25,20 @@ class SPI_Driver(uvm_driver):
 
         self.bridge.spi_mode = ConfigDB().get(self,"","spi_mode")
 
-    async def run_phase(self):
-        self.raise_objection()
-        self.logger.info("Start run phase")
+    async def launch_tb(self):
+        self.logger.info("Start test")
         await self.bridge.reset()
-        self.logger.info("Reset done")
         await self.bridge.drive_clock()
-        self.logger.info("Drive clock done")
-        await Timer(5,"us")
-        self.drop_objection()
+        self.bridge.start()
+        await RisingEdge(self.bridge.itf.clk)
 
-    def end_of_run_phase(self):
-        print("Finito")
+    async def run_phase(self):
+        await self.launch_tb()
+        while True :
+            item : SPI_Item = await self.seq_item_port.get_next_item()
+            await self.bridge.to_send.put(item.data)
+            await self.bridge.evt.word_done.wait()
+            self.seq_item_port.item_done()
+
         
 
