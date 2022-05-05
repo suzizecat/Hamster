@@ -1,19 +1,24 @@
-\documentclass[a4paper]{article}
+\section{Commande moteur}
+Si l'on considère le chronogramme \cref{fig:chrono_centered_motor}, il est possible de définir les délai suivants :
+\begin{itemize}
+    \item \tstep : Durée passée sur une étape de pilotage de moteur.
+    \item \tpre : Durée entre la sélection des phases à alimenter et le début de l'envoi de puissance dans le moteur.
+    \item \ton  : Durée active du pilotage du moteur (puissance est transmise)
+    \item \tpost: Durée entre la fin de la periode active du pilotage et le changement de sélection de phases.
+    \item \toff : Durée entre deux activation de la puissance
+\end{itemize}
 
-\usepackage[margin=2cm]{geometry}
-\usepackage{lmodern}
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{graphicx}
-\usepackage{color}
-\usepackage{import}
-
-\newcommand{\toff}{\ensuremath{\mathit{t_{off}}}}
-%\graphicspath{{../pdftex/}}
-\begin{document}
-\begin{center}
+\begin{figure}[h]
     \def\svgwidth{17cm}
-    \import{../pdftex/}{wave_pwr_cmd.pdf_tex}
-\end{center}
-Ceci est un test : \toff .
-\end{document}
+    \import{pdftex/}{wave_pwr_cmd.pdf_tex}
+    \caption{Chronogramme}
+    \label{fig:chrono_centered_motor}
+\end{figure}
+
+Etant donné \cref{fig:chrono_centered_motor}, et afin d'assurer un bon fonctionnement du système, il est possible de poser les contraintes suivantes :
+$$\toff \ge t_{\mathit{SW_{\mathit{MOS}}}}$$
+
+Pour tenter de centrer la commande, on pourra utiliser :
+$$\tpre^{+1} = \frac{\tpre + \tpost + \Delta \ton}{2}$$
+Cependant, on pourra tenter l'implémentation sans le facteur $\Delta\ton$ car il peut être complexe d'estimer ce coefficient.
+Comme l'utilisation de ce facteur risque de sur-estimer la commande, il sera intéressant de pouvoir désactiver dynamiquement l'utilisation de ce facteur.
