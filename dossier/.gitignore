@@ -1,0 +1,8 @@
+*.toc
+*.xdv
+*.aux
+*latexmk*
+*.fls
+*.synctex*
+*.lof
+main.pdf

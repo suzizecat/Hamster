@@ -9,26 +9,26 @@
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{import}
-
+\usepackage{todonotes}
 \usepackage[T1]{fontenc}   
 \usepackage{babel}
+\usepackage{xspace}
 \usepackage{cleveref}
+\renewcommand{\familydefault}{\sfdefault}
 
+\input{macros.tex}
 
 \author{Julien \textsc{Faucher}}
 \title{Hamster documentation}
 
-\newcommand{\toff}{\ensuremath{\mathit{t_{off}}}}
-\newcommand{\tstep}{\ensuremath{\mathit{t_{step}}}}
-\newcommand{\ton}{\ensuremath{\mathit{t_{on}}}}
-\newcommand{\tpre}{\ensuremath{\mathit{t_{pre}}}}
-\newcommand{\tpost}{\ensuremath{\mathit{t_{post}}}}
+
 
 
 %\graphicspath{{../pdftex/}}
 \begin{document}
 \maketitle
 \tableofcontents 
+\listoffigures
 \chapter{Commande moteurs}
 \input{timing_cmd_mot/timing_cmd_mot.tex}
 \end{document}
