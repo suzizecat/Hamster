@@ -41,6 +41,10 @@ En effet, d'un point de vue électronique, cela reviendrait à réaliser un cour
     \label{fig:wave_phase_drive}
 \end{figure}
 
+Chaque partie du chronogramme de la \cref{fig:wave_phase_drive} correspond à une configuration $P^1_+ + P^2_-$ différente.
+On appellera par la suite ces configurations des \emph{pas de commande}.
+Lors d'un fonctionnement normal, il n'est pas possible de sauter des pas, à moins que le moteur n'aille trop vite pour le système de commande.  
+
 \subsection{Détermination de la longueur des pas de phase}
 Le codeur utilisé pour l'asservissement du moteur est un codeur incrémental utilisant des signaux ABI\todo{wave si pas flemme}.
 Afin d'établir un système de commande, il faut déterminer \dnabi le nombre d'évènement ABI entre chaque changement de configuration de phase.
@@ -61,6 +65,10 @@ Soit donc
 $$\dnabi = \frac{1200}{3\times40} = 10$$
 
 Il est donc nécessaire de changer de configuration de phases tous les 10 évènements ABI.
+
+\paragraph{}
+Notons que si la géométrie du moteur change et que l'on souhaite modifier le nombre d'aimants/de bobines, \dnabi est inversement proportionnel au nombre d'aimants \naimants.
+Dans cette configuration, on pourra donc réduire le nombre d'aimants de n'importe quelle valeur tout en conservant un nombre entier d'étapes ABI par pas de commande.
 
 \subsection{Principe de la commande aux limites de position}
 Afin d'être au maximum d'efficacité lors des commandes, on tentera de piloter les phases comme indiqué dans la \cref{seq:cmd_principes_base}.
@@ -90,3 +98,6 @@ Il faudra cependant faire attention au fait de ne piloter qu'une commande ($+$ o
 Si on considère un module par signal de commande, on peut implémenter un compteur/décompteur en plus d'un seuil permettant d'activer la puissance sur simple comparaison.
 
 Il sera cependant nécessaire de réaliser une division par 10, ce qui peut s'avérer délicat.
+
+\subsection{Configuration initiale et prise d'origine}
+Afin de régler la position initiale du codeur, on essaiera de se placer dans une position stable, par exemple en pilotant $(A_+, B_-, C_-)$ qui devrait placer le moteur dans une position stable, avec la phase $A$ alignée sur un aimant $N$
