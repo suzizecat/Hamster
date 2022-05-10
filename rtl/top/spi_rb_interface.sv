@@ -103,7 +103,7 @@ module spi_rb_interface (
 			if (i_csn) begin
 				fsm_state <= IDLE;
 				address   <= 0;
-			end else begin
+			end	else begin
 				fsm_state      <= fsm_state_next;
 				o_spi_valid_tx <= 0;
 				mif_rd_rb.read <= 0;

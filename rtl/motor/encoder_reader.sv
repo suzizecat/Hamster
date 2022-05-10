@@ -29,7 +29,7 @@ module encoder_reader (
 				o_step     <= 1;
 				o_polarity <= i_polarity;
 			end
-			if (current_ab == ((previous_ab) ^ 2'b10)) begin
+			if (current_ab == ((previous_ab) ^ 2'b01)) begin
 				o_step     <= 1;
 				o_polarity <= ~i_polarity;
 			end
