@@ -67,11 +67,14 @@ assign power_mask = {{3{power_on}},3'b111};
 
 	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_substep_counter
 		if (~ i_rst_n ) begin
-			abi_step_cnt <= $size(abi_step_cnt)'(K_NSUBSTEPS-1);
-			step         <= 0;
+			abi_step_cnt <= $size(abi_step_cnt)'(0);
+			step         <= 5;
 			o_pattern    <= 0;
 		end else begin
 			o_pattern    <= i_brake ? 6'b000111 : (selected_output & power_mask);
+			if (i_force_step_trigger && (unsigned'(i_force_step_value) > 5)) begin
+				step <= i_force_step_value;
+			end
 			if(i_step_trigger) begin
 				if (control_step_trigger) begin
 					step         <= i_step_polarity_rev ? step_m1 : step_p1;
