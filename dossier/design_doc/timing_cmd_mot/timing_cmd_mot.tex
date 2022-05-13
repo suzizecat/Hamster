@@ -58,7 +58,7 @@ Soit un nombre $\nstep$ de pas de pilotage de phases par tour de roue défini pa
 $$\nstep = 6 \times \nseq$$
 
 Enfin, si l'on considère \nabi le nombre d'évènement produit par le codeur incrémental par tour de roue, on a :
-$$\dnabi = \frac{\nabi}{\nstep} = \frac{\nabi}{\frac{6\times\naimants}{2}} = \frac{\nabi}{3\times\naimants}$$
+$$\dnabi = \cfrac{\nabi}{\nstep} = \cfrac{\nabi}{\cfrac{6\times\naimants}{2}} = \cfrac{\nabi}{3\times\naimants}$$
 
 Considérant le codeur incrémental AS5047P configuré pour générer 300 impulsions par tour soit 1200 évenements exploitables par tour de roue.
 Soit donc 
@@ -70,7 +70,27 @@ Il est donc nécessaire de changer de configuration de phases tous les 10 évèn
 Notons que si la géométrie du moteur change et que l'on souhaite modifier le nombre d'aimants/de bobines, \dnabi est inversement proportionnel au nombre d'aimants \naimants.
 Dans cette configuration, on pourra donc réduire le nombre d'aimants de n'importe quelle valeur tout en conservant un nombre entier d'étapes ABI par pas de commande.
 
+\subsection{Principe de la commande PWM directe}
+
+Afin d'avoir un système fonctionnel en toute circonstance, notamment lorsque le moteur n'est pas en rotation, 
+une solution simple consiste à gérer la puissance via une modulation de largeur d'impulsion (MLI ou PWM) indépendamment de la position du moteur.
+On a alors deux commandes différentes et dissociées :
+\begin{itemize}
+    \item Une commande de sélection de phase, dépendant de la position du moteur,
+    \item Une commande de puissance, uniquement dépendante de l'utilisateur.
+\end{itemize}
+
+Cette commande consiste à effectuer un ET logique entre la sélection de phase et la commande de puissance.
+
+\paragraph{}
+Cette méthode présente un certain nombre d'inconvenients, notamment une possibilité de stresser l'électronique de puissance ("glitchs" de commande) et une commande sous-optimale (voir \cref{sec:cmd_limite_position}).
+Cependant, cette méthode est extrèmement fiable et permet un démarrage à l'arrêt. 
+
+\paragraph{}
+Cette méthode sera donc utilisée pour lancer le moteur ou lorsque le moteur tourne trop lentement pour pouvoir être piloté autrement.
+
 \subsection{Principe de la commande aux limites de position}
+\label{sec:cmd_limite_position}
 Afin d'être au maximum d'efficacité lors des commandes, on tentera de piloter les phases comme indiqué dans la \cref{seq:cmd_principes_base}.
 
 \paragraph{}
@@ -101,3 +121,56 @@ Il sera cependant nécessaire de réaliser une division par 10, ce qui peut s'av
 
 \subsection{Configuration initiale et prise d'origine}
 Afin de régler la position initiale du codeur, on essaiera de se placer dans une position stable, par exemple en pilotant $(A_+, B_-, C_-)$ qui devrait placer le moteur dans une position stable, avec la phase $A$ alignée sur un aimant $N$
+
+Cette position doit ensuite être associée à une valeur "zéro" du codeur et l'initialisation du système peut se faire.
+Notamment, cette position correspond à un pas ABI de $\frac{\dnabi}{2}$
+
+
+\paragraph{}
+Soit la fonction $\varphi$ associant l'indice d'une étape de commande au pilotage des phases correspondant, définie par  :
+$$\varphi : S \longmapsto (P_x,Q_y,R_z)$$
+où :
+
+\begin{tabular}{lll}
+    $S$ & est l'indice d'une étape (\emph{step}) de pilotage de phase & $S \in \{0,1,2,3,4,5\}$ \\
+    $P, Q, R$ & sont les symboles désignant les phases  & $P,Q,R \in \{A,B,C\}$ \\
+    $x, y, z$ & sont les symboles désignant la commande d'une phase & $x, y, z \in \{+,-,0\}$
+\end{tabular}
+\newline
+\newline
+On défini également : 
+\begin{itemize}
+    \item $\varphi_0$ la fonction $\varphi$ telle que le moteur reste dans sa position courante,
+    \item $\varphi_+$ la fonction $\varphi$ telle que le moteur tourne dans un sens "positif",
+    \item $\varphi_-$ la fonction $\varphi$ telle que le moteur tourne dans un sens "négatif".
+\end{itemize}
+
+\paragraph{}
+
+Si l'on corrèle les \cref{fig:bobines_vs_aimants,fig:wave_phase_drive} on constate que la commande fournie permet l'avancée du moteur.
+La \cref{fig:wave_phase_drive} représente donc la fonction $\varphi_+$.
+
+Il est possible de définir une matrice de correspondance $\cmddirmatrix$ :
+
+\[
+    \cmddirmatrix = 
+    \begin{bmatrix}
+        A_0 & B_- & C_+ \\
+        A_+ & B_- & C_0 \\
+        A_+ & B_0 & C_- \\
+        A_0 & B_+ & C_- \\
+        A_- & B_+ & C_0 \\
+        A_- & B_0 & C_+ \\
+    \end{bmatrix}
+\]
+
+Auquel cas on a :
+$$\fctcmd{+}(S) = \left(\scmddirmatrix\right)_{S,*}$$
+
+Afin de changer le sens de rotation, il est nécessaire d'inverser la commande (à position égale). C'est à dire réaliser la transformation  $(P_+,Q_-,R_0) \to (P_-,Q_+,R_0)$.
+
+D'après la \cref{fig:wave_phase_drive}, on constate que cette inversion a lieu si l'on se décale de trois pas de commande. On a donc :
+$$\varphi_- : S \longmapsto \varphi_+(S +3 \mod 6)$$
+
+Et donc :
+$$\fctcmd{+}(S) = \fctcmd{-}(S+3) = \fctcmd{-}(S-3)$$
