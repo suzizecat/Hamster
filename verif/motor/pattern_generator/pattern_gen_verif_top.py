@@ -1,15 +1,18 @@
 from random import randint
 import cocotb
-from cocotb.triggers import Timer, RisingEdge, ClockCycles
+from cocotb.triggers import Timer, RisingEdge, ClockCycles,FallingEdge, NextTimeStep
 from cocotb.clock import Clock
 
 async def reset(clk,rst):
-    rst.value = 0
-    clk.value = 0
-
-    await Timer(10,"us")
-    clk_hdl = Clock(clk,10,"ns")
     rst.value = 1
+    clk.value = 0
+    
+    await Timer(1,"us")
+    rst.value = 0
+    await Timer(8,"us")
+    rst.value = 1
+    await Timer(1,"us")
+    clk_hdl = Clock(clk,10,"ns")
     return cocotb.fork(clk_hdl.start())
 
 
@@ -31,12 +34,15 @@ async def base_test(dut):
         pow_value = randint(0,n_substep-1)
         dut.i_power._log.info(f"Setting {pow_value:=}")
         dut.i_power.value = pow_value
-        for i in range(6*n_substep) :
+        for i in range((6*n_substep)) :
+            await FallingEdge(dut.i_clk)
             dut.i_step_trigger.value = 1
+            #dut.i_step_trigger._log.info("Tick")
+            await NextTimeStep()
             await ClockCycles(dut.i_clk,1)
             dut.i_step_trigger.value = 0
+            #dut.i_step_trigger._log.info("Tock")
             await ClockCycles(dut.i_clk,5)
-
         dut.i_power.value = 0
         await Timer(1,"us")
     clk_task.kill()
