@@ -1,0 +1,49 @@
+\subsection{Définitions relatives aux commandes des phases}
+
+Les moteurs cible de Hamster sont les moteurs triphasés, avec un branchement en étoile comme représenté \cref{fig:schema_phases_moteur}.
+On peut considérer la présence de trois bobines, branchées en un point commun, nommé point milieu (cercle vert).
+Chaque extrémité libre de ces bobines (carrés jaunes) peuvent être :
+\begin{itemize}
+    \item reliée à une source de courant (carré encadré en rouge)
+    \item reliée à une masse (carré encadré en bleu)
+    \item laissé flotante (carré encadré en gris, et bobine en pointillés)
+\end{itemize}
+
+On considèrera le flux magnétique généré par le passage du courant en direction du point central comme étant négatif (pôle N, flèche bleue).
+De même, le flux magnétique provoqué par le passage du courant du point milieu vers l'extrémité libre de la bobine (flèche rouge) sera considéré positif (pôle P).
+
+\begin{figure}[h]
+    \centering
+    \import{pdftex/}{triphase_definition.pdf_tex}
+    \caption{Schéma simplificatif des phases d'un moteur}
+    \label{fig:schema_phases_moteur}
+\end{figure}
+
+Dans la mesure où le point milieu n'est généralmement pas accessible et pour réduire la complexité de l'électronique, seules les extrémités libres de la bobines seront exposées a l'exterieur du moteur.
+Ainsi, seules ces extrémités pourront être reliées à un système de pilotage.
+
+\paragraph{}
+On nommera \emph{phases} les bobines du moteur. Dans la mesure où un moteur peut avoir plusieurs bobines par phase, 
+
+\paragraph{}
+On nommera \emph{commande d'une phase} l'état (flottante, connectée  à une source ou connectée à la masse) d'une phase et, par extension, l'action de placer une phase dans l'un de ces états.
+
+\paragraph{}
+On notera \phase{} l'ensemble des phases. On notera \phase{x} une phase particulière où $x$ est le nom de la phase. On considèrera avoir trois phases nommées A, B et C et donc
+$$\phase{} = \{\phase{A} , \phase{B}, \phase{C}\} $$
+Toute autre lettre placée en indice (par exemple \phase{x}) indique une phase quelconque. Toute autre signification sera indiquée explicitement.
+
+\paragraph{}
+On représentera les différents états de phase à l'aide des symboles suivants :
+\begin{itemize}
+    \item Phase alimentée par une source de courant : \phhi
+    \item Phase liée à la masse : \phlo
+    \item Phase flottante : \phoff
+\end{itemize}
+On notera l'association d'une phase à un état en utilisant une notation en exposant.
+Par exemple : \phstate{x}{\phhi} indique que la phase $x$ est alimentée par une source de courant.
+Tout autre symbole (par exemple \phstate{x}{\alpha}) indique, sauf mention contraire, un état quelconque.
+
+On nommera \emph{commande du moteur} un vecteur \cmdmot défini par
+$$ \cmdmot = \left(\phstate{A}{\alpha},\phstate{B}{\beta},\phstate{C}{\gamma}\right)$$
+

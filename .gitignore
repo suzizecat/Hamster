@@ -10,7 +10,3 @@ results.xml
 log/
 synth/
 
-*.aux
-*latexmk*
-*.fls
-*.synctex*

@@ -8,7 +8,7 @@ Il suffit ensuite de décaller cette commande dans une direction ou l'autre pour
 Ce mécanisme est à l'origine de la commande des moteurs synchrones, mais la conaissance de la position du moteur permet d'éviter le phénomène de décrochage.
 
 \paragraph{}
-Par construction, on a 3 bobines (branche du stator) pour 4 pôles (aimants). Ainsi, lors d'une rotation, on a les déplacements présentés 
+Par construction, on a 3 bobines pour 4 pôles (aimants). Ainsi, lors d'une rotation, on a les déplacements présentés 
 \cref{fig:bobines_vs_aimants} entre les bobines et les aimants.
 
 Sur cette figure, la première ligne représente la position des aimants. $P$ signifie que le pôle positif est présenté au stator tandis que $N$ indique que le pôle négatif est présenté au stator.
@@ -17,7 +17,7 @@ Les zones en hachuré indiquent qu'il s'agit d'une position dans laquelle une bo
 Les dégradés de couleurs indiquent qu'une bobine à cette position devrait être polarisée dans le sens positif (rouge) ou négatif (bleu) afin de déplacer les bobines vers la droite.
 Le fait que les zones de couleurs soient dégradées représente le fait qu'il est plus efficace d'alimenter les bobines lorsqu'elles sont proches des aimants (couleur intense) plutôt qu'entre deux aimants (blanc).
 Enfin, chaque ligne représente l'écoulement du temps, en direction du bas.
-
+Les lettres présentes dans la partie basse de la \cref{fig:bobines_vs_aimants} correspondent à la position de la phase correspondant à la lettre.
 \begin{figure}[h]
     \centering
     \includegraphics{png/phases_aimants_switching.png}
@@ -25,8 +25,8 @@ Enfin, chaque ligne représente l'écoulement du temps, en direction du bas.
     \label{fig:bobines_vs_aimants}
 \end{figure}
 
-Les six étapes que l'on peut voir \cref{fig:bobines_vs_aimants} correspondent à des commandes de phases.\todo{definir}
-Afin de correspondre à l'implémentation électronique du bloc de commande, on considèrera pour les trois phases $A$, $B$ et $C$ des signaux $\mathit{Phase}_-$ et $\mathit{Phase}_+$
+Les six étapes que l'on peut voir \cref{fig:bobines_vs_aimants} correspondent à des commandes de phases.
+Afin de correspondre à l'implémentation électronique du bloc de commande, on considèrera pour les trois phases \pha, \phb et \phc des signaux $\mathit{Phase}_-$ et $\mathit{Phase}_+$
 qui correspondent respectivement à la mise à la masse et à la mise sous tension de la phase.
 
 \paragraph{}

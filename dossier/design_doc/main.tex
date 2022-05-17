@@ -6,6 +6,7 @@
 %\usepackage[colorlinks=true,allcolors=linkColor,citecolor=blue]{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{titlepic}
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{import}
@@ -22,7 +23,7 @@
 
 \author{Julien \textsc{Faucher}}
 \title{Hamster documentation}
-
+\titlepic{\includegraphics{png/logo.png}}
 
 \setlist{nosep}
 
@@ -31,6 +32,6 @@
 \maketitle
 \tableofcontents 
 \listoffigures
-\chapter{Commande moteurs}
-\input{timing_cmd_mot/timing_cmd_mot.tex}
+\input{introduction/_intro_top.tex}
+\input{timing_cmd_mot/_cmd_mot_main.tex}
 \end{document}
