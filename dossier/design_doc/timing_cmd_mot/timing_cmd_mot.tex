@@ -1,6 +1,6 @@
 \section{Commande logique}
 \subsection{Principe de base}
-\label{seq:cmd_principes_base}
+\label{sec-cmd_principes_base}
 Le moteur de défis solaire est un moteur brushless triphasé (BLDC) piloté par un "asservissement à la position suivante".
 Il s'agit, à l'aide d'un codeur, d'obtenir la position absolue du moteur et d'en déduire la commande de phases correspondante à la position en cours.
 Il suffit ensuite de décaller cette commande dans une direction ou l'autre pour faire tourner le moteur qui suivra la commande.
@@ -9,7 +9,7 @@ Ce mécanisme est à l'origine de la commande des moteurs synchrones, mais la co
 
 \paragraph{}
 Par construction, on a 3 bobines pour 4 pôles (aimants). Ainsi, lors d'une rotation, on a les déplacements présentés 
-\cref{fig:bobines_vs_aimants} entre les bobines et les aimants.
+\cref{fig-bobines_vs_aimants} entre les bobines et les aimants.
 
 Sur cette figure, la première ligne représente la position des aimants. $P$ signifie que le pôle positif est présenté au stator tandis que $N$ indique que le pôle négatif est présenté au stator.
 Les zones en hachuré indiquent qu'il s'agit d'une position dans laquelle une bobine ne devrait pas être alimentée.
@@ -17,20 +17,20 @@ Les zones en hachuré indiquent qu'il s'agit d'une position dans laquelle une bo
 Les dégradés de couleurs indiquent qu'une bobine à cette position devrait être polarisée dans le sens positif (rouge) ou négatif (bleu) afin de déplacer les bobines vers la droite.
 Le fait que les zones de couleurs soient dégradées représente le fait qu'il est plus efficace d'alimenter les bobines lorsqu'elles sont proches des aimants (couleur intense) plutôt qu'entre deux aimants (blanc).
 Enfin, chaque ligne représente l'écoulement du temps, en direction du bas.
-Les lettres présentes dans la partie basse de la \cref{fig:bobines_vs_aimants} correspondent à la position de la phase correspondant à la lettre.
+Les lettres présentes dans la partie basse de la \cref{fig-bobines_vs_aimants} correspondent à la position de la phase correspondant à la lettre.
 \begin{figure}[h]
     \centering
     \includegraphics{png/phases_aimants_switching.png}
     \caption{Vision du déplacement vers la droite des bobines vis-à-vis des aimants}
-    \label{fig:bobines_vs_aimants}
+    \label{fig-bobines_vs_aimants}
 \end{figure}
 
-Les six étapes que l'on peut voir \cref{fig:bobines_vs_aimants} correspondent à des commandes de phases.
+Les six étapes que l'on peut voir \cref{fig-bobines_vs_aimants} correspondent à des commandes de phases.
 Afin de correspondre à l'implémentation électronique du bloc de commande, on considèrera pour les trois phases \pha, \phb et \phc des signaux $\mathit{Phase}_-$ et $\mathit{Phase}_+$
 qui correspondent respectivement à la mise à la masse et à la mise sous tension de la phase.
 
 \paragraph{}
-La \cref{fig:bobines_vs_aimants} correspond donc à la succession des signaux de commande présentée \cref{fig:wave_phase_drive}. 
+La \cref{fig-bobines_vs_aimants} correspond donc à la succession des signaux de commande présentée \cref{fig-wave_phase_drive}. 
 On remarquera notamment que les signaux $\mathit{Phase}_+$ et $\mathit{Phase}_-$ d'une même phase ne sont \emph{jamais} pilotés en même temps.
 En effet, d'un point de vue électronique, cela reviendrait à réaliser un court-circuit. 
 
@@ -38,10 +38,10 @@ En effet, d'un point de vue électronique, cela reviendrait à réaliser un cour
     \centering
     \import{pdftex/}{wave_phase_drive.pdf_tex}
     \caption{Signaux de pilotage des phases}
-    \label{fig:wave_phase_drive}
+    \label{fig-wave_phase_drive}
 \end{figure}
 
-Chaque partie du chronogramme de la \cref{fig:wave_phase_drive} correspond à une configuration $P^1_+ + P^2_-$ différente.
+Chaque partie du chronogramme de la \cref{fig-wave_phase_drive} correspond à une configuration $P^1_+ + P^2_-$ différente.
 On appellera par la suite ces configurations des \emph{pas de commande}.
 Lors d'un fonctionnement normal, il n'est pas possible de sauter des pas, à moins que le moteur n'aille trop vite pour le système de commande.  
 
@@ -50,8 +50,8 @@ Le codeur utilisé pour l'asservissement du moteur est un codeur incrémental ut
 Afin d'établir un système de commande, il faut déterminer \dnabi le nombre d'évènement ABI entre chaque changement de configuration de phase.
 
 \paragraph{}
-On considère un moteur avec 3 bobines pour 4 aimants tel que précédemment defini ainsi que la \cref{fig:bobines_vs_aimants}.
-Si l'on a au total \naimants aimants pour \nbobines bobines, il faudra réaliser \nseq fois la séquence présentée \cref{fig:wave_phase_drive} où
+On considère un moteur avec 3 bobines pour 4 aimants tel que précédemment defini ainsi que la \cref{fig-bobines_vs_aimants}.
+Si l'on a au total \naimants aimants pour \nbobines bobines, il faudra réaliser \nseq fois la séquence présentée \cref{fig-wave_phase_drive} où
 $$\nseq = \frac{\naimants}{2}$$
 
 Soit un nombre $\nstep$ de pas de pilotage de phases par tour de roue défini par:
@@ -83,18 +83,18 @@ On a alors deux commandes différentes et dissociées :
 Cette commande consiste à effectuer un ET logique entre la sélection de phase et la commande de puissance.
 
 \paragraph{}
-Cette méthode présente un certain nombre d'inconvenients, notamment une possibilité de stresser l'électronique de puissance ("glitchs" de commande) et une commande sous-optimale (voir \cref{sec:cmd_limite_position}).
+Cette méthode présente un certain nombre d'inconvenients, notamment une possibilité de stresser l'électronique de puissance ("glitchs" de commande) et une commande sous-optimale (voir \cref{sec-cmd_limite_position}).
 Cependant, cette méthode est extrèmement fiable et permet un démarrage à l'arrêt. 
 
 \paragraph{}
 Cette méthode sera donc utilisée pour lancer le moteur ou lorsque le moteur tourne trop lentement pour pouvoir être piloté autrement.
 
 \subsection{Principe de la commande aux limites de position}
-\label{sec:cmd_limite_position}
-Afin d'être au maximum d'efficacité lors des commandes, on tentera de piloter les phases comme indiqué dans la \cref{seq:cmd_principes_base}.
+\label{sec-cmd_limite_position}
+Afin d'être au maximum d'efficacité lors des commandes, on tentera de piloter les phases comme indiqué dans la \cref{sec-cmd_principes_base}.
 
 \paragraph{}
-Le détail de cette commande est montré \cref{fig:wave_drive_wrt_abi}. 
+Le détail de cette commande est montré \cref{fig-wave_drive_wrt_abi}. 
 En considérant un sens de rotation normal, un signal de configuration de phase quelconque devra rester actif pendant deux pas de commande consécutifs.
 Afin d'éviter tout "collage" à l'aproche de l'aimant (fin de chronogramme), on pourra prendre un évènement ABI de marge pour désactiver la commande prématurément (représenté en orange).
 Afin de réguler la puissance fournée, on réalisera une modulation de largeur d'impulsion (PWM) mais dont la periode inactive sera centrée sur le moment éloigné des aimants, entre les deux pas de commande.
@@ -105,7 +105,7 @@ Afin de réguler la puissance fournée, on réalisera une modulation de largeur 
     \small
     \import{pdftex/}{wave_drive_puissance.pdf_tex}
     \caption{Exemple de pilotage de la puissance vis-à-vis d'un encodeur ABI}
-    \label{fig:wave_drive_wrt_abi}
+    \label{fig-wave_drive_wrt_abi}
 \end{figure}
 
 Si l'on admet une précision de 10 points dans la commande (éventuellement 20), cette solution est en fait relativement simple à implémenter materiellement.
@@ -147,8 +147,8 @@ On défini également :
 
 \paragraph{}
 
-Si l'on corrèle les \cref{fig:bobines_vs_aimants,fig:wave_phase_drive} on constate que la commande fournie permet l'avancée du moteur.
-La \cref{fig:wave_phase_drive} représente donc la fonction $\varphi_+$.
+Si l'on corrèle les \cref{fig-bobines_vs_aimants,fig-wave_phase_drive} on constate que la commande fournie permet l'avancée du moteur.
+La \cref{fig-wave_phase_drive} représente donc la fonction $\varphi_+$.
 
 Il est possible de définir une matrice de correspondance $\cmddirmatrix$ :
 
@@ -169,7 +169,7 @@ $$\fctcmd{+}(S) = \left(\scmddirmatrix\right)_{S,*}$$
 
 Afin de changer le sens de rotation, il est nécessaire d'inverser la commande (à position égale). C'est à dire réaliser la transformation  $(P_+,Q_-,R_0) \to (P_-,Q_+,R_0)$.
 
-D'après la \cref{fig:wave_phase_drive}, on constate que cette inversion a lieu si l'on se décale de trois pas de commande. On a donc :
+D'après la \cref{fig-wave_phase_drive}, on constate que cette inversion a lieu si l'on se décale de trois pas de commande. On a donc :
 $$\varphi_- : S \longmapsto \varphi_+(S +3 \mod 6)$$
 
 Et donc :
