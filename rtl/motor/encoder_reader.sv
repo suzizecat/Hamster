@@ -10,8 +10,16 @@ module encoder_reader (
 	output logic o_polarity  //! Triggered step polarity
 );
 
-	logic [1:0] previous_ab;
+	logic [1:0] expected_ab_pos;
 	logic [1:0] current_ab ;
+
+	const logic [3:0][1:0] positive_abi_lut = { 
+		2'b01, // 11 -> 01 
+		2'b11, // 10 -> 11
+		2'b00, // 01 -> 00
+		2'b10  // 00 -> 10
+	};
+
 
 	assign current_ab = {i_a,i_b};
 
@@ -20,16 +28,16 @@ module encoder_reader (
 		if (~ i_rst_n ) begin
 			o_step      <= 0;
 			o_polarity  <= 0;
-			previous_ab <= 0;
+			expected_ab_pos <= 0;
 		end else begin
-			previous_ab <= current_ab;
+			expected_ab_pos <= positive_abi_lut[current_ab];
 			o_step      <= 0;
 			o_polarity  <= 0;
-			if (current_ab == ((previous_ab) ^ 2'b10)) begin
+			if (current_ab == expected_ab_pos) begin
 				o_step     <= 1;
 				o_polarity <= i_polarity;
 			end
-			if (current_ab == ((previous_ab) ^ 2'b01)) begin
+			if (current_ab == (expected_ab_pos ^ 2'b11)) begin
 				o_step     <= 1;
 				o_polarity <= ~i_polarity;
 			end
