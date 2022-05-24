@@ -13,7 +13,7 @@ def clk_per_step(speed,freq=80e6,diameter = 0.7, step_per_tr = 6*40//2):
 
 if __name__ == "__main__" :
     fast_sps, fast_cps = clk_per_step(convert_speed(30))
-    slow_sps, slow_cps = clk_per_step(0.05)
+    slow_sps, slow_cps = clk_per_step(0.01)
     
     print(f"Fast")
     print(f"    Clock cycles per steps : {fast_cps:11.2f} - {log2(fast_cps):11.2f}")
