@@ -1,0 +1,97 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{pagegarde}[2022/01/01 Belle page de garde]
+
+\RequirePackage{kvoptions}
+\RequirePackage{tikz}
+\RequirePackage{color}
+
+\definecolor{mainDark}{RGB}{0,73,119}
+\definecolor{mainLight}{RGB}{0,157,225}
+
+\DeclareStringOption[mainDark]{dark}%
+\DeclareStringOption[mainLight]{light}%
+\DeclareBoolOption{nofig}
+%\DeclareStringOption{logo}%
+\ProcessKeyvalOptions*\relax
+
+\newcommand{\@company}{}
+\newcommand{\@dpt}{}
+\newcommand{\@addr}{}
+\newcommand{\@phones}{}
+\newcommand{\@email}{}
+\newcommand{\@subtitle}{}
+\newcommand{\@authordetails}{}
+\newcommand{\@logo}{}
+\newcommand{\@illustration}{}
+
+\newcommand{\company}[1]{\renewcommand{\@company}{#1}}
+\newcommand{\dpt}[1]{\renewcommand{\@dpt}{#1}}
+\newcommand{\addr}[1]{\renewcommand{\@addr}{#1}}
+\newcommand{\phones}[1]{\renewcommand{\@phones}{#1}}
+\newcommand{\email}[1]{\renewcommand{\@email}{#1}}
+\newcommand{\subtitle}[1]{\renewcommand{\@subtitle}{#1}}
+\newcommand{\authordetails}[1]{\renewcommand{\@authordetails}{#1}}
+\newcommand{\logo}[1]{\renewcommand{\@logo}{#1}}
+\newcommand{\illustration}[1]{\renewcommand{\@illustration}{#1}}
+
+
+%\newcommand{\@author}{Julien FAUCHER}
+
+
+\newcommand{\@side}{\@company{} -- \@dpt{}}
+\newcommand{\yolo}{
+    \PackageWarning{pagegarde}{light color is \pagegarde@light and dark is \pagegarde@dark}
+    {\color{\pagegarde@light}This is light} and {\color{\pagegarde@dark} this is dark}
+    }
+\newcommand{\otheryolo}{\color{lgt}This is light}
+\newcommand{\makepagegarde}{
+    \thispagestyle{empty}
+    {
+    \fontsize{11}{11}
+    \begin{tikzpicture}[remember picture, overlay]
+        \begin{scope}[shift={(current page.south west)}]
+            \draw[draw=\pagegarde@light!50,fill=\pagegarde@light!50] (0,0) rectangle (21,5);
+        
+            \draw[draw=\pagegarde@dark!60,fill=\pagegarde@dark!60] (0,0) rectangle (2,29.7);	
+            
+            \draw[draw=\pagegarde@dark!80,fill=\pagegarde@dark!80] (0,5.5) rectangle (21,5);
+        \end{scope}
+    \end{tikzpicture}
+    
+    \begin{tikzpicture}[remember picture, overlay]
+        \begin{scope}[shift={(current page.south west)}]
+            \draw (0.5,6.5) node[below right,rotate=90] { \Huge{\makebox[22cm]{\color{white}\@side\hfill}}};
+        \end{scope}
+    \end{tikzpicture}
+    
+    \begin{tikzpicture}[remember picture, overlay]
+        \begin{scope}[shift={(current page.north west)}]
+            \draw (4,-5.5) node[right] { \Huge			{\makebox[15cm]{\hfill\color{\pagegarde@dark}\@title}}};
+            \draw (4,-6.5) node[right] { \huge \slshape	{\makebox[15cm]{\hfill\color{\pagegarde@dark}{\@subtitle}}}};
+            \draw[color=\pagegarde@dark] (4.1,-7) -- (19.3,-7);
+            \draw (4,-7.5) node[right] { \huge 			{\makebox[15cm]{\color{\pagegarde@dark}\@author\hfill}}};
+            \draw (4,-8.3) node[right] { \LARGE 		{\makebox[15cm]{\color{\pagegarde@dark}\@authordetails\hfill}}};
+            \draw (4,-8.8) node[right] { \large 		{\makebox[15cm]{\hfill\color{\pagegarde@dark}\@date}}};
+            
+            
+            \draw (5,-26.4) node[right] { \Large 		{\makebox[14cm]{\hfill\color{\pagegarde@dark}\textsc{\@company}\hfill}}};
+            \draw[color=\pagegarde@dark](5,-26.7) -- (19,-26.7);
+            
+            \draw (5,-27) 	node[right] { \normalsize	{\makebox[14cm]{\hfill\color{\pagegarde@dark}{\textsc{\@dpt}}\hfill}}};
+            \draw (5,-27.2) node[below right] { \small 		{\makebox[14cm]{\hfill\color{\pagegarde@dark}\@addr\hfill}}};
+            \draw (5,-27.6) node[below right] { \small 		{\makebox[14cm]{\hfill\color{\pagegarde@dark}\@phones\hfill}}};
+            \draw (5,-28) node[below right] { \small  		{\makebox[14cm]{\hfill\color{\pagegarde@dark}\@email\hfill}}};
+    
+        \end{scope}
+    \end{tikzpicture} 
+    \ifpagegarde@nofig\else%
+    \begin{tikzpicture}[remember picture, overlay]
+        \begin{scope}[shift={(current page.north west)}]
+            \draw (19,-1) node[below left] {\includegraphics[width=5cm,height=2cm,keepaspectratio=true]{\@logo}};
+            \draw (11,-16.5) node {\includegraphics[width=10cm,height=8cm,keepaspectratio=true]{\@illustration}};
+        \end{scope}
+    \end{tikzpicture}
+    \fi%
+    }
+    \newpage
+}

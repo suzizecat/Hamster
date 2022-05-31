@@ -9,6 +9,7 @@ module pattern_generator #(parameter int K_NSUBSTEPS = 10) (
 	input  logic                           i_step_reverse      , //! Output the reverse
 	input  logic                           i_brake             , //! Brake mode
 	input  logic                           i_bypass_power      , //! Force full ON output
+	input  logic                           i_cmd_on_lsb        , //! When 1, the commande signals used are patterns LSB
 	input  logic [$clog2(K_NSUBSTEPS)-1:0] i_power             , //!
 	output logic [                    5:0] o_pattern             //! Motor control pattern
 );
@@ -44,57 +45,73 @@ module pattern_generator #(parameter int K_NSUBSTEPS = 10) (
 
 
 
-	always_comb begin : p_comb_step
-		case (step) inside
-			0,6 : begin
-				step_p1 = 1;
-				step_m1 = 5;
-			end
-			[1:4] :
-			begin
-				step_p1 = step + 1;
-				step_m1 = step - 1;
-			end
-			5 : begin
-				step_p1 = 0;
-				step_m1 = 4;
-			end
-			7 : begin
-				step_p1 = 1;
-				step_m1 = 0;
-			end
-			// Default not needed, as all case covered. 
-		endcase
-		step_sel = i_step_reverse ? step_m1 : step_p1;
-	end
+	always_comb
+		begin : p_comb_step
+			case (step)
+				inside
+					0,6 :
+						begin
+							step_p1 = 1;
+							step_m1 = 5;
+						end
+				[1:4] :
+					begin
+						step_p1 = step + 1;
+						step_m1 = step - 1;
+					end
+				5 :
+					begin
+						step_p1 = 0;
+						step_m1 = 4;
+					end
+				7 :
+					begin
+						step_p1 = 1;
+						step_m1 = 0;
+					end
+				// Default not needed, as all case covered.
+			endcase
+			step_sel = i_step_reverse ? step_m1 : step_p1;
+		end
 
 	logic [5:0] selected_output;
 	logic [5:0] power_mask     ;
 
 	assign selected_output = step_lut[step_sel];
-	assign power_mask      = {{3{power_on}},3'b111};
+	assign power_mask      = {{3{power_on | i_cmd_on_lsb}},{3{power_on | ~i_cmd_on_lsb}}};
 
-	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_substep_counter
-		if (~ i_rst_n ) begin
-			abi_step_cnt <= $size(abi_step_cnt)'(0);
-			step         <= 5;
-			o_pattern    <= 0;
-		end else begin
-			o_pattern <= i_brake ? 6'b000111 : (selected_output & power_mask);
-			if (i_force_step_trigger) begin
-				step         <= (i_force_step_value < 6) ? i_force_step_value : 0;
-				abi_step_cnt <= i_force_substep;
-			end else begin
-				if(i_step_trigger) begin
-					if (control_step_trigger) begin
-						step <= i_step_polarity_rev ? step_m1 : step_p1;
-					end else begin
-						abi_step_cnt <= abi_step_cnt_next;
-					end
+	always_ff @(posedge i_clk or negedge i_rst_n)
+		begin : p_seq_substep_counter
+			if (~ i_rst_n )
+				begin
+					abi_step_cnt <= $size(abi_step_cnt)'(0);
+					step         <= 5;
+					o_pattern    <= 0;
 				end
-			end
+			else
+				begin
+					o_pattern <= i_brake ? 6'b000111 : (selected_output & power_mask);
+					if (i_force_step_trigger)
+						begin
+							step         <= (i_force_step_value < 6) ? i_force_step_value : 0;
+							abi_step_cnt <= i_force_substep;
+						end
+					else
+						begin
+							if(i_step_trigger)
+								begin
+									if (control_step_trigger)
+										begin
+											step <= i_step_polarity_rev ? step_m1 : step_p1;
+										end
+									else
+										begin
+											abi_step_cnt <= abi_step_cnt_next;
+										end
+								end
+						end
+				end
 		end
-	end
 
 	logic power_on;
 	assign power_on = i_bypass_power | ((i_power > abi_step_cnt) ? 1'b1 : 1'b0);

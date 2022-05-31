@@ -26,9 +26,9 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 
 	// always_comb begin : p_comb_power_mapping
 	// 	if (i_param_pwr_on_pattern_msb) begin
-	// 		o_cmd = control_pattern & {{3{pwm}},3'b111};
+	// 		o_cmd = control_pattern;
 	// 	end else begin
-	// 		o_cmd = control_pattern & {3'b111, {3{pwm}}};
+	// 		o_cmd = {control_pattern[2:0],control_pattern[5:3]} ;
 	// 	end
 	// end
 
@@ -38,7 +38,7 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 
 
 
-	pwm_gen_left #(.K_RES(K_PWMRES)) pwm_gen_left_dut (
+	pwm_gen_left #(.K_RES(K_PWMRES)) u_pwm_gen (
 		.i_clk      (i_clk          ),
 		.i_rst_n    (i_rst_n        ),
 		.i_enable   (1'b1           ),
@@ -58,10 +58,7 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 	);
 
 	// 15 bits is enough to have 30km/h over 1 sec.
-	speed_meter #(
-		.K_WIDTH(  
-		         15)  
-	) speed_meter_dut (
+	speed_meter #(.K_WIDTH(15)) u_speed_meter (
 		.i_clk         (i_clk            ),
 		.i_rst_n       (i_rst_n          ),
 		.i_spd_trigger (step_trigger     ),
@@ -75,18 +72,19 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 
 
 	pattern_generator #(.K_NSUBSTEPS(10)) u_output_stage (
-		.i_clk               (i_clk       ),
-		.i_rst_n             (i_rst_n     ),
-		.i_force_step_value  ('b0         ),
-		.i_force_step_trigger('b0         ),
-		.i_force_substep     ('b0         ),
-		.i_step_trigger      (step_trigger),
-		.i_step_polarity_rev (step_pol    ),
-		.i_step_reverse      (i_reverse   ),
-		.i_brake             (i_brake     ),
-		.i_bypass_power      ('b0         ),
-		.i_power             (5           ),
-		.o_pattern           (o_cmd       )
+		.i_clk               (i_clk                      ),
+		.i_rst_n             (i_rst_n                    ),
+		.i_force_step_value  ('b0                        ),
+		.i_force_step_trigger('b0                        ),
+		.i_force_substep     ('b0                        ),
+		.i_step_trigger      (step_trigger               ),
+		.i_step_polarity_rev (step_pol                   ),
+		.i_step_reverse      (i_reverse                  ),
+		.i_brake             (i_brake                    ),
+		.i_bypass_power      ('b0                        ),
+		.i_cmd_on_lsb        (~i_param_pwr_on_pattern_msb),
+		.i_power             (5                          ),
+		.o_pattern           (o_cmd                      )
 	);
 
 endmodule
