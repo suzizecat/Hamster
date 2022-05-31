@@ -21,6 +21,8 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 	output logic [         5:0] o_cmd                       //! Output to motor driver
 );
 
+	localparam int K_SPDWIDTH = 15;
+
 	logic       pwm            ;
 	logic [5:0] control_pattern;
 
@@ -36,6 +38,19 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 	logic step_trigger;
 	logic step_pol    ;
 
+	logic [K_SPDWIDTH-1:0] measured_speed      ;
+	logic                  measured_speed_valid;
+	logic                  speed_is_low        ;
+
+	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_low_speed
+		if (~ i_rst_n ) begin
+			speed_is_low <= 0;
+		end else begin
+			if (measured_speed_valid) begin
+				speed_is_low <= measured_speed < 'd2640;
+			end
+		end
+	end
 
 
 	pwm_gen_left #(.K_RES(K_PWMRES)) u_pwm_gen (
@@ -59,15 +74,15 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 
 	// 15 bits is enough to have 30km/h over 1 sec.
 	speed_meter #(.K_WIDTH(15)) u_speed_meter (
-		.i_clk         (i_clk            ),
-		.i_rst_n       (i_rst_n          ),
-		.i_spd_trigger (step_trigger     ),
-		.i_time_trigger(i_speed_time_base),
-		.i_step_size   (1                ),
-		.i_force_reset (0                ),
-		.i_unlock      (i_enc_i          ),
-		.o_speed       (                 ),
-		.o_valid       (                 )
+		.i_clk         (i_clk               ),
+		.i_rst_n       (i_rst_n             ),
+		.i_spd_trigger (step_trigger        ),
+		.i_time_trigger(i_speed_time_base   ),
+		.i_step_size   (1                   ),
+		.i_force_reset (0                   ),
+		.i_unlock      (i_enc_i             ),
+		.o_speed       (measured_speed      ),
+		.o_valid       (measured_speed_valid)
 	);
 
 
@@ -81,7 +96,7 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 		.i_step_polarity_rev (step_pol                   ),
 		.i_step_reverse      (i_reverse                  ),
 		.i_brake             (i_brake                    ),
-		.i_bypass_power      ('b0                        ),
+		.i_bypass_power      (speed_is_low               ),
 		.i_cmd_on_lsb        (~i_param_pwr_on_pattern_msb),
 		.i_power             (5                          ),
 		.o_pattern           (o_cmd                      )

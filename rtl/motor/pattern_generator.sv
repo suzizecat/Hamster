@@ -114,6 +114,6 @@ module pattern_generator #(parameter int K_NSUBSTEPS = 10) (
 		end
 
 	logic power_on;
-	assign power_on = i_bypass_power | ((i_power > abi_step_cnt) ? 1'b1 : 1'b0);
+	assign power_on = i_bypass_power | ((i_power > abi_step_cnt) ? ~i_cmd_on_lsb : i_cmd_on_lsb);
 
 endmodule

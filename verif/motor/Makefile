@@ -14,6 +14,7 @@ COMPILE_ARGS += -I../../pwm/rtl
 
 # MODULE is the basename of the Python test file
 MODULE = test_$(TOPLEVEL)
-EXTRA_ARGS += --trace-fst --trace-structs
+EXTRA_ARGS += --trace-fst 
+EXTRA_ARGS += --trace-structs 
 # include cocotb's make rules to take care of the simulator setup
 include $(shell cocotb-config --makefiles)/Makefile.sim
