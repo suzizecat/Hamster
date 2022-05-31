@@ -11,6 +11,8 @@
 \DeclareStringOption[mainDark]{dark}%
 \DeclareStringOption[mainLight]{light}%
 \DeclareBoolOption{nofig}
+\DeclareBoolOption{nologo}
+\DeclareBoolOption{noillus}
 %\DeclareStringOption{logo}%
 \ProcessKeyvalOptions*\relax
 
@@ -87,8 +89,12 @@
     \ifpagegarde@nofig\else%
     \begin{tikzpicture}[remember picture, overlay]
         \begin{scope}[shift={(current page.north west)}]
+            \ifpagegarde@nologo\else%
             \draw (19,-1) node[below left] {\includegraphics[width=5cm,height=2cm,keepaspectratio=true]{\@logo}};
+            \fi%
+            \ifpagegarde@noillus\else%
             \draw (11,-16.5) node {\includegraphics[width=10cm,height=8cm,keepaspectratio=true]{\@illustration}};
+            \fi%
         \end{scope}
     \end{tikzpicture}
     \fi%

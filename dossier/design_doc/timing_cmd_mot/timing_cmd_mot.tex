@@ -98,6 +98,10 @@ Le détail de cette commande est montré \cref{fig-wave_drive_wrt_abi}.
 En considérant un sens de rotation normal, un signal de configuration de phase quelconque devra rester actif pendant deux pas de commande consécutifs.
 Afin d'éviter tout "collage" à l'aproche de l'aimant (fin de chronogramme), on pourra prendre un évènement ABI de marge pour désactiver la commande prématurément (représenté en orange).
 Afin de réguler la puissance fournée, on réalisera une modulation de largeur d'impulsion (PWM) mais dont la periode inactive sera centrée sur le moment éloigné des aimants, entre les deux pas de commande.
+On utilisera pour cela une valeur de "niveau de puissance" associant le pas ABI à un seuil, en fonction du pas de commande en cours.
+Pour piloter la puissance, il suffira alors d'activer la puissance tant que la commande est inferieure au niveau de puissance.
+
+Afin de permettre une extinction totale de la puissance, on utilisera une comparaison stricte (commande strictement infèrieure au seuil).
 
 \begin{figure}[h]
     \centering
@@ -108,69 +112,13 @@ Afin de réguler la puissance fournée, on réalisera une modulation de largeur 
     \label{fig-wave_drive_wrt_abi}
 \end{figure}
 
-Si l'on admet une précision de 10 points dans la commande (éventuellement 20), cette solution est en fait relativement simple à implémenter materiellement.
-Une fois une prise d'origine réalisée, il suffit de surveiller le pas ABI et le pas commande pour piloter en fonction de la position.
-
-\paragraph{}
-Il faudra cependant faire attention au fait de ne piloter qu'une commande ($+$ ou $-$) de cette façon, sinon la commande réelle aura lieu au milieu des pas de commande ce qui est sous-optimal.
-
-\paragraph{}
-Si on considère un module par signal de commande, on peut implémenter un compteur/décompteur en plus d'un seuil permettant d'activer la puissance sur simple comparaison.
-
-Il sera cependant nécessaire de réaliser une division par 10, ce qui peut s'avérer délicat.
 
 \subsection{Configuration initiale et prise d'origine}
-Afin de régler la position initiale du codeur, on essaiera de se placer dans une position stable, par exemple en pilotant $(A_+, B_-, C_-)$ qui devrait placer le moteur dans une position stable, avec la phase $A$ alignée sur un aimant $N$
+Afin de régler la position initiale du codeur, on essaiera de se placer dans une position mécaniquement stable.
+Une telle position ne peut être atteinte en utilisant une configuration normale de pilotage du moteur de la forme $(\phstate{x}{\phhi},\phstate{y}{\phlo},\phstate{z}{\phoff})$ qui est magnétiquement stable mais mécaniquement instable.
+
+On choisira plutôt une configuration de la forme $(\phstate{x}{\phhi},\phstate{y}{\phlo},\phstate{z}{\phlo})$, permettant de positionner la phase \phase{x} en face d'un pôle P
 
 Cette position doit ensuite être associée à une valeur "zéro" du codeur et l'initialisation du système peut se faire.
-Notamment, cette position correspond à un pas ABI de $\frac{\dnabi}{2}$
-
-
-\paragraph{}
-Soit la fonction $\varphi$ associant l'indice d'une étape de commande au pilotage des phases correspondant, définie par  :
-$$\varphi : S \longmapsto (P_x,Q_y,R_z)$$
-où :
-
-\begin{tabular}{lll}
-    $S$ & est l'indice d'une étape (\emph{step}) de pilotage de phase & $S \in \{0,1,2,3,4,5\}$ \\
-    $P, Q, R$ & sont les symboles désignant les phases  & $P,Q,R \in \{A,B,C\}$ \\
-    $x, y, z$ & sont les symboles désignant la commande d'une phase & $x, y, z \in \{+,-,0\}$
-\end{tabular}
-\newline
-\newline
-On défini également : 
-\begin{itemize}
-    \item $\varphi_0$ la fonction $\varphi$ telle que le moteur reste dans sa position courante,
-    \item $\varphi_+$ la fonction $\varphi$ telle que le moteur tourne dans un sens "positif",
-    \item $\varphi_-$ la fonction $\varphi$ telle que le moteur tourne dans un sens "négatif".
-\end{itemize}
-
-\paragraph{}
-
-Si l'on corrèle les \cref{fig-bobines_vs_aimants,fig-wave_phase_drive} on constate que la commande fournie permet l'avancée du moteur.
-La \cref{fig-wave_phase_drive} représente donc la fonction $\varphi_+$.
-
-Il est possible de définir une matrice de correspondance $\cmddirmatrix$ :
-
-\[
-    \cmddirmatrix = 
-    \begin{bmatrix}
-        A_0 & B_- & C_+ \\
-        A_+ & B_- & C_0 \\
-        A_+ & B_0 & C_- \\
-        A_0 & B_+ & C_- \\
-        A_- & B_+ & C_0 \\
-        A_- & B_0 & C_+ \\
-    \end{bmatrix}
-\]
-
-Auquel cas on a :
-$$\fctcmd{+}(S) = \left(\scmddirmatrix\right)_{S,*}$$
-
-Afin de changer le sens de rotation, il est nécessaire d'inverser la commande (à position égale). C'est à dire réaliser la transformation  $(P_+,Q_-,R_0) \to (P_-,Q_+,R_0)$.
-
-D'après la \cref{fig-wave_phase_drive}, on constate que cette inversion a lieu si l'on se décale de trois pas de commande. On a donc :
-$$\varphi_- : S \longmapsto \varphi_+(S +3 \mod 6)$$
-
-Et donc :
-$$\fctcmd{+}(S) = \fctcmd{-}(S+3) = \fctcmd{-}(S-3)$$
+Cette position correspond à un pas ABI \initabipos valant :
+$$\initabipos = \frac{\dnabi}{2}$$

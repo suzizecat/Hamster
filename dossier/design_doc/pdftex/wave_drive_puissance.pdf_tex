@@ -1,4 +1,4 @@
-%% Creator: Inkscape inkscape 0.92.5, www.inkscape.org
+%% Creator: Inkscape 1.2 (1:1.2+202205241504+da316b6974), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
 %% Accompanies image file 'wave_drive_puissance.pdf' (pdf, eps, ps)
 %%
@@ -38,7 +38,7 @@
   \newcommand*\fsize{\dimexpr\f@size pt\relax}%
   \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{750bp}%
+    \setlength{\unitlength}{780bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -50,37 +50,61 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.12)%
+  \begin{picture}(1,0.14423077)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{wave_drive_puissance.pdf}}%
-    \put(0.0905,0.0995){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}Pas cmd\end{tabular}}}}%
+    \put(0.12548077,0.12451923){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}Pas cmd\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{wave_drive_puissance.pdf}}%
-    \put(0.0905,0.0695){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}Puissance\end{tabular}}}}%
+    \put(0.12548077,0.09567308){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}Puissance\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{wave_drive_puissance.pdf}}%
-    \put(0.0905,0.0395){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}Front ABI\end{tabular}}}}%
+    \put(0.12548077,0.06682692){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}Front ABI\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{wave_drive_puissance.pdf}}%
-    \put(0.0905,0.0095){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}Pas ABI\end{tabular}}}}%
+    \put(0.12548077,0.03798077){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}Pas ABI\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{wave_drive_puissance.pdf}}%
-    \put(0.1665,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
-    \put(0.2065,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}1\end{tabular}}}}%
-    \put(0.2465,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}2\end{tabular}}}}%
-    \put(0.2865,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}3\end{tabular}}}}%
-    \put(0.3265,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}4\end{tabular}}}}%
-    \put(0.3665,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}5\end{tabular}}}}%
-    \put(0.4065,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}6\end{tabular}}}}%
-    \put(0.4465,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}7\end{tabular}}}}%
-    \put(0.4865,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}8\end{tabular}}}}%
-    \put(0.5265,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}9\end{tabular}}}}%
-    \put(0.5665,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
-    \put(0.6065,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}1\end{tabular}}}}%
-    \put(0.6465,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}2\end{tabular}}}}%
-    \put(0.6865,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}3\end{tabular}}}}%
-    \put(0.7265,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}4\end{tabular}}}}%
-    \put(0.7665,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}5\end{tabular}}}}%
-    \put(0.8065,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}6\end{tabular}}}}%
-    \put(0.8465,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}7\end{tabular}}}}%
-    \put(0.8865,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}8\end{tabular}}}}%
-    \put(0.9265,0.0095){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}9\end{tabular}}}}%
+    \put(0.19855769,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
+    \put(0.23701923,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}1\end{tabular}}}}%
+    \put(0.27548077,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}2\end{tabular}}}}%
+    \put(0.31394231,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}3\end{tabular}}}}%
+    \put(0.35240385,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}4\end{tabular}}}}%
+    \put(0.39086538,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}5\end{tabular}}}}%
+    \put(0.42932692,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}6\end{tabular}}}}%
+    \put(0.46778846,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}7\end{tabular}}}}%
+    \put(0.50625,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}8\end{tabular}}}}%
+    \put(0.54471154,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}9\end{tabular}}}}%
+    \put(0.58317308,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
+    \put(0.62163462,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}1\end{tabular}}}}%
+    \put(0.66009615,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}2\end{tabular}}}}%
+    \put(0.69855769,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}3\end{tabular}}}}%
+    \put(0.73701923,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}4\end{tabular}}}}%
+    \put(0.77548077,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}5\end{tabular}}}}%
+    \put(0.81394231,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}6\end{tabular}}}}%
+    \put(0.85240385,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}7\end{tabular}}}}%
+    \put(0.89086538,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}8\end{tabular}}}}%
+    \put(0.92932692,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}9\end{tabular}}}}%
+    \put(0.96778846,0.03798077){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
+    \put(0.12548077,0.00913462){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}Niveau puissance\end{tabular}}}}%
+    \put(0,0){\includegraphics[width=\unitlength,page=6]{wave_drive_puissance.pdf}}%
+    \put(0.19855769,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
+    \put(0.23701923,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}1\end{tabular}}}}%
+    \put(0.27548077,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}2\end{tabular}}}}%
+    \put(0.31394231,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}3\end{tabular}}}}%
+    \put(0.35240385,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}4\end{tabular}}}}%
+    \put(0.39086538,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}5\end{tabular}}}}%
+    \put(0.42932692,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}6\end{tabular}}}}%
+    \put(0.46778846,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}7\end{tabular}}}}%
+    \put(0.50625,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}8\end{tabular}}}}%
+    \put(0.54471154,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}9\end{tabular}}}}%
+    \put(0.58317308,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}9\end{tabular}}}}%
+    \put(0.62163462,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}8\end{tabular}}}}%
+    \put(0.66009615,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}7\end{tabular}}}}%
+    \put(0.69855769,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}6\end{tabular}}}}%
+    \put(0.73701923,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}5\end{tabular}}}}%
+    \put(0.77548077,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}4\end{tabular}}}}%
+    \put(0.81394231,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}3\end{tabular}}}}%
+    \put(0.85240385,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}2\end{tabular}}}}%
+    \put(0.89086538,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}1\end{tabular}}}}%
+    \put(0.92932692,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
+    \put(0.96778846,0.00913462){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
   \end{picture}%
 \endgroup%
