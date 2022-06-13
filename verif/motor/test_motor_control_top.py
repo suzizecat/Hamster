@@ -23,7 +23,11 @@ async def drive_timebase(clock,tbpin,period):
 async def base(dut : ModifiableObject) :
     c = await cocotb.start(Clock(dut.i_clk,10,"ns").start())
     timebase = await cocotb.start(drive_timebase(dut.i_clk,dut.i_speed_time_base,(100,"us")))
+    dut.i_rst_n.value = 0
+    await Timer(100,"ns")
     dut.i_rst_n.value = 1
+    dut.i_param_low_speed_thr.value = 2560
+
     itf = EncoderABI.ABIInterface(a=dut.i_enc_a,b=dut.i_enc_b,i=dut.i_enc_i)
     encoder = EncoderABI(300,itf=itf)
     encoder.speed_tr_per_sec = 10000
@@ -46,6 +50,10 @@ async def base(dut : ModifiableObject) :
         await Timer(10,"us")
     encoder.direction = 0
     cocotb.log.info(f"High speed, pwr on MSB, reverse, direction inverted")
+    for i in range(25):
+        await Timer(10,"us")
+    encoder.direction = 1
+    cocotb.log.info(f"High speed, pwr on MSB, reverse, direction direct")
     for i in range(25):
         await Timer(10,"us")
     # ctrl = MotorControllerDriver(dut)

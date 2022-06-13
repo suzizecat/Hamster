@@ -1,5 +1,5 @@
 # Makefile
-SRC_PATH = $(PRJ_PATH)/rtl/spi
+SRC_PATH := $(PRJ_PATH)/rtl/spi
 MODE ?= behav
 
 ifeq ($(MODE),gate)

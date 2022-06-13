@@ -58,7 +58,7 @@ module core_top (
 	logic [PWM_RES-1:0] cmd_steer    ;
 	logic [PWM_RES-1:0] cmd_power    ;
 
-
+	logic time_speed;
 
 	assign radio_deadzones = {
 		PWM_RES'(regbank_out.RADIO1DEAD_VAL),
@@ -124,6 +124,14 @@ module core_top (
 		.mif_regbank_out(regbank_out)
 	);
 
+	timebase #(.K_RES(14)) u_speed_timebase (
+		.i_clk  (i_clk     ),
+		.i_rst_n(i_rst_n   ),
+		.i_stop ('b0       ),
+		.i_thr  ('d10000   ),
+		.o_tick (time_speed)
+	);
+
 
 	channels_decoder #(
 		.K_NCHAN(4      ),
@@ -131,7 +139,7 @@ module core_top (
 	) u_channel_decode (
 		.i_clk       (i_clk             ),
 		.i_rst_n     (i_rst_n           ),
-		.i_chan_route(radio_route                  ),
+		.i_chan_route(radio_route       ),
 		.i_channels  (i_channels        ),
 		.i_deadzone  (radio_deadzones[0]),
 		.i_timebase  (i_clk             ),
@@ -154,16 +162,18 @@ module core_top (
 		.i_brake                   (cmd_brake                   ),
 		.i_reverse                 (cmd_rev                     ),
 		.i_pwm_command             (cmd_power                   ),
+		.i_speed_time_base         (time_speed                  ),
 		.i_param_enc_pol           (regbank_out.MOT1CR_ENC_POL  ),
 		.i_param_i_step            (regbank_out.MOT1CR_I_STEP   ),
 		.i_param_i_step_en         (regbank_out.MOT1CR_I_EN     ),
 		.i_param_pwm_max           (regbank_out.MOT1PWM_MAX[9:0]),
 		.i_param_pwr_on_pattern_msb(regbank_out.MOT1CR_PWR_MSB  ),
 		.i_param_pwr_on_pattern_all(regbank_out.MOT1CR_PWR_ALL  ),
+		.i_param_low_speed_thr     (regbank_out.SPDLOW_SPDLOWTHR),
 		.o_cmd                     (o_cmd_m1                    )
 	);
 
-	motor_control_top #(.K_PWMRES(PWM_RES)) u_mot_2 (
+	motor_control_top #(.K_PWMRES(PWM_RES)) u_mot_2_b (
 		.i_clk                     (i_clk                       ),
 		.i_rst_n                   (i_rst_n                     ),
 		.i_enc_a                   (i_enc2_a                    ),
@@ -172,12 +182,14 @@ module core_top (
 		.i_brake                   (cmd_brake                   ),
 		.i_reverse                 (cmd_rev                     ),
 		.i_pwm_command             (cmd_power                   ),
+		.i_speed_time_base         (time_speed                  ),
 		.i_param_enc_pol           (regbank_out.MOT2CR_ENC_POL  ),
 		.i_param_i_step            (regbank_out.MOT2CR_I_STEP   ),
 		.i_param_i_step_en         (regbank_out.MOT2CR_I_EN     ),
 		.i_param_pwm_max           (regbank_out.MOT2PWM_MAX[9:0]),
 		.i_param_pwr_on_pattern_msb(regbank_out.MOT2CR_PWR_MSB  ),
 		.i_param_pwr_on_pattern_all(regbank_out.MOT2CR_PWR_ALL  ),
+		.i_param_low_speed_thr     (regbank_out.SPDLOW_SPDLOWTHR),
 		.o_cmd                     (o_cmd_m2                    )
 	);
 

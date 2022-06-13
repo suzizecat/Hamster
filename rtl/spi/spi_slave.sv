@@ -78,7 +78,6 @@ module spi_slave #(parameter  K_DWIDTH = 16) (
 			o_selected           <= ~ i_cs_n ;
 			transmit_data_to_system <= 0;
 			if(start_sequence) begin
-				{o_miso,miso_buffer} <= i_data_to_send;
 				mosi_buffer   <= 0;
 				input_counter <= K_DWIDTH-1;
 			end
@@ -99,6 +98,10 @@ module spi_slave #(parameter  K_DWIDTH = 16) (
 				if(trigger_send) begin
 					{o_miso,miso_buffer} <= {miso_buffer,1'b0};
 				end
+			end else if (o_selected & i_cs_n) begin
+				// On CSN falling edge, flush output 
+				o_miso <= 0;
+				miso_buffer <= 0;
 			end
 
 			if(i_valid_data) begin

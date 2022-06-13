@@ -15,6 +15,7 @@
 `define MOT1PWM_OFFSET    `K_AWIDTH'h8
 `define MOT2CR_OFFSET     `K_AWIDTH'h9
 `define MOT2PWM_OFFSET    `K_AWIDTH'hA
+`define SPDLOW_OFFSET     `K_AWIDTH'hB
 `define COMPTEST_OFFSET   `K_AWIDTH'hA9
 
 /* end of register adress map */

@@ -25,6 +25,7 @@ interface hamster_regbank_out_if;
     logic         MOT2CR_PWR_MSB;
     logic         MOT2CR_PWR_ALL;
     logic [ 9: 0] MOT2PWM_MAX;
+    logic [14: 0] SPDLOW_SPDLOWTHR;
 modport slave (
     input  RADIOCFGR_DIR_CHAN,
     input  RADIOCFGR_PWR_CHAN,
@@ -49,7 +50,8 @@ modport slave (
     input  MOT2CR_I_EN,
     input  MOT2CR_PWR_MSB,
     input  MOT2CR_PWR_ALL,
-    input  MOT2PWM_MAX
+    input  MOT2PWM_MAX,
+    input  SPDLOW_SPDLOWTHR
 );
 modport master (
     output RADIOCFGR_DIR_CHAN,
@@ -75,6 +77,7 @@ modport master (
     output MOT2CR_I_EN,
     output MOT2CR_PWR_MSB,
     output MOT2CR_PWR_ALL,
-    output MOT2PWM_MAX
+    output MOT2PWM_MAX,
+    output SPDLOW_SPDLOWTHR
 );
 endinterface : hamster_regbank_out_if

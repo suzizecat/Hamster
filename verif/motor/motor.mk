@@ -1,8 +1,8 @@
 # Makefile
 MODE ?= behav
-
-include ./pattern_generator/pattern_generator.mk
-include ../pwm/pwm.mk
+SELF_DIR := $(dir $(lastword $(MAKEFILE_LIST)))
+include $(SELF_DIR)/pattern_generator/pattern_generator.mk
+include $(SELF_DIR)/../pwm/pwm.mk
 
 SRC_PATH := $(PRJ_PATH)/rtl/motor
 VERILOG_SOURCES := $(VERILOG_SOURCES) 

@@ -1,5 +1,17 @@
 /* registers bank design - file automatically generated - do not modify */
 
+//-----------------------------------------------------------------------------
+//    this confidential and proprietary file may be used only as authorized
+//                 by a licensing agreement from EASii IC sas
+//                       Copyright 2022 EASii IC SAS
+//                    legal statement: all rights reserved
+//     the entire notice above must be reproduced on all authorized copies
+//-----------------------------------------------------------------------------
+// Generated on 2022-06-08
+//-----------------------------------------------------------------------------
+
+// ----------------------------------------------------------------------------
+
 `include "hamster_regs_map.svh"
 
 //! 
@@ -101,6 +113,15 @@
 //! 
 //! Motor2 PWM
 //! 
+
+//! ## SPDLOW_SPDLOWTHR
+//! 
+//! Low speed threshold to use direct drive method
+//! 
+//! ## SPDLOW_SPDLOWTHR
+//! 
+//! Low speed threshold to use direct drive method
+//! 
 //! 
 //! # COMPTEST
 //! - Offset : 0xA9
@@ -139,6 +160,7 @@ logic [`K_DWIDTH-1:0] MOT1CR    ;
 logic [`K_DWIDTH-1:0] MOT1PWM   ;
 logic [`K_DWIDTH-1:0] MOT2CR    ;
 logic [`K_DWIDTH-1:0] MOT2PWM   ;
+logic [`K_DWIDTH-1:0] SPDLOW    ;
 logic [`K_DWIDTH-1:0] COMPTEST  ;
 
 
@@ -155,6 +177,7 @@ logic WR_MOT1CR    ;
 logic WR_MOT1PWM   ;
 logic WR_MOT2CR    ;
 logic WR_MOT2PWM   ;
+logic WR_SPDLOW    ;
 
 
 // ----------------------------------------------------------------------------
@@ -185,6 +208,7 @@ logic         F_MOT2CR_I_EN         ;
 logic         F_MOT2CR_PWR_MSB      ;
 logic         F_MOT2CR_PWR_ALL      ;
 logic [ 9: 0] F_MOT2PWM_MAX         ;
+logic [14: 0] F_SPDLOW_SPDLOWTHR    ;
 logic [15: 0] F_COMPTEST_COMP_TEST  ;
 
 // Register write control -- Address decoding
@@ -198,6 +222,7 @@ assign WR_MOT1CR     = ((sif_reg_wrchan.addr == `MOT1CR_OFFSET    ) && (sif_reg_
 assign WR_MOT1PWM    = ((sif_reg_wrchan.addr == `MOT1PWM_OFFSET   ) && (sif_reg_wrchan.write == 1'b1)) ? 1'b1 : 1'b0;
 assign WR_MOT2CR     = ((sif_reg_wrchan.addr == `MOT2CR_OFFSET    ) && (sif_reg_wrchan.write == 1'b1)) ? 1'b1 : 1'b0;
 assign WR_MOT2PWM    = ((sif_reg_wrchan.addr == `MOT2PWM_OFFSET   ) && (sif_reg_wrchan.write == 1'b1)) ? 1'b1 : 1'b0;
+assign WR_SPDLOW     = ((sif_reg_wrchan.addr == `SPDLOW_OFFSET    ) && (sif_reg_wrchan.write == 1'b1)) ? 1'b1 : 1'b0;
 
 // -----------------------------------------------------------------------------------
 // Shadow read control
@@ -490,6 +515,19 @@ always_ff @(posedge i_clk or negedge i_rst_n) begin : p_MOT2PWM_MAX
     end
 end : p_MOT2PWM_MAX
 
+always_ff @(posedge i_clk or negedge i_rst_n) begin : p_SPDLOW_SPDLOWTHR
+    if (i_rst_n == 1'b0) begin
+        F_SPDLOW_SPDLOWTHR     <= 15'hA50;
+    end else begin
+        for (int i = 14; i >= 0; i--) begin
+            if ((WR_SPDLOW     == 1'b1) && (sif_reg_wrchan.bmask[i] == 1'b0)) begin
+                F_SPDLOW_SPDLOWTHR[i - 0] <= sif_reg_wrchan.data[i]; //RW
+            end
+        end
+        
+    end
+end : p_SPDLOW_SPDLOWTHR
+
 always_ff @(posedge i_clk or negedge i_rst_n) begin : p_COMPTEST_COMP_TEST
     if (i_rst_n == 1'b0) begin
         F_COMPTEST_COMP_TEST   <= 16'hCAFE;
@@ -514,6 +552,7 @@ always_comb begin : p_comb_reg_fields
     MOT1PWM    = { 6'b0, F_MOT1PWM_MAX };
     MOT2CR     = { 8'b0, F_MOT2CR_PWR_ALL, F_MOT2CR_PWR_MSB, F_MOT2CR_I_EN, F_MOT2CR_ENC_POL, 1'b0, F_MOT2CR_I_STEP };
     MOT2PWM    = { 6'b0, F_MOT2PWM_MAX };
+    SPDLOW     = { 1'b0, F_SPDLOW_SPDLOWTHR };
     COMPTEST   = { F_COMPTEST_COMP_TEST };
 end : p_comb_reg_fields
 
@@ -545,6 +584,7 @@ end : p_comb_reg_fields
         mif_regbank_out.MOT2CR_PWR_MSB       = F_MOT2CR_PWR_MSB;
         mif_regbank_out.MOT2CR_PWR_ALL       = F_MOT2CR_PWR_ALL;
         mif_regbank_out.MOT2PWM_MAX          = F_MOT2PWM_MAX;
+        mif_regbank_out.SPDLOW_SPDLOWTHR     = F_SPDLOW_SPDLOWTHR;
     end : p_comb_wr_out
 
 // ----------------------------------------------------------------------------
@@ -565,6 +605,7 @@ always_comb begin : p_comb_read_reg
             `MOT1PWM_OFFSET   : rdata = MOT1PWM;
             `MOT2CR_OFFSET    : rdata = MOT2CR;
             `MOT2PWM_OFFSET   : rdata = MOT2PWM;
+            `SPDLOW_OFFSET    : rdata = SPDLOW;
             `COMPTEST_OFFSET  : rdata = COMPTEST;
             default: rdata = {`K_DWIDTH{1'b0}};
         endcase

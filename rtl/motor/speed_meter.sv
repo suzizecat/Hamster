@@ -10,26 +10,31 @@ module speed_meter #(parameter int K_WIDTH = 32) (
 	output logic               o_valid
 );
 
-	logic [K_WIDTH-1:0] cnt            ;
-	logic               force_rest_prev;
+	logic [K_WIDTH-1:0] cnt             ;
+	logic               force_reset_prev;
+	logic               req_unlock      ;
 
 
 	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_speed_counter
 		if (~ i_rst_n ) begin
-			cnt             <= 0;
-			o_speed         <= 0;
-			o_valid         <= 0;
-			force_rest_prev <= 1;
+			cnt              <= 0;
+			o_speed          <= 0;
+			o_valid          <= 0;
+			force_reset_prev <= 1;
+			req_unlock       <= 0;
 		end else begin
 
 			o_valid <= i_time_trigger;
 
-			if (i_force_reset | force_rest_prev) begin
-				cnt             <= 0;
-				o_speed         <= 0;
-				force_rest_prev <= 1;
-				if (i_time_trigger & i_unlock) begin
-					force_rest_prev <= 0; // Unlock the counter
+			if (i_force_reset | force_reset_prev) begin
+				cnt              <= 0;
+				o_speed          <= 0;
+				force_reset_prev <= 1;
+
+				req_unlock <= (req_unlock | i_unlock) & ~i_force_reset ;
+				if (i_time_trigger & (i_unlock | req_unlock)) begin
+					force_reset_prev <= 0; // Unlock the counter
+					req_unlock       <= 0;
 				end
 			end else begin
 				if (i_time_trigger) begin

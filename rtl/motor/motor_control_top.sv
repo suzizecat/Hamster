@@ -17,6 +17,7 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 	input  logic [K_PWMRES-1:0] i_param_pwm_max           , //! Maximum PWM Value
 	input  logic                i_param_pwr_on_pattern_msb, //!
 	input  logic                i_param_pwr_on_pattern_all, //!
+	input  logic [        14:0] i_param_low_speed_thr     , //! Low speed threshold
 	// Outputs
 	output logic [         5:0] o_cmd                       //! Output to motor driver
 );
@@ -26,28 +27,20 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 	logic       pwm            ;
 	logic [5:0] control_pattern;
 
-	// always_comb begin : p_comb_power_mapping
-	// 	if (i_param_pwr_on_pattern_msb) begin
-	// 		o_cmd = control_pattern;
-	// 	end else begin
-	// 		o_cmd = {control_pattern[2:0],control_pattern[5:3]} ;
-	// 	end
-	// end
-
-
 	logic step_trigger;
 	logic step_pol    ;
 
 	logic [K_SPDWIDTH-1:0] measured_speed      ;
 	logic                  measured_speed_valid;
 	logic                  speed_is_low        ;
+	logic                  dir_change          ;
 
 	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_low_speed
 		if (~ i_rst_n ) begin
-			speed_is_low <= 0;
+			speed_is_low <= 1;
 		end else begin
 			if (measured_speed_valid) begin
-				speed_is_low <= measured_speed < 'd2640;
+				speed_is_low <= measured_speed < i_param_low_speed_thr; //d2640
 			end
 		end
 	end
@@ -63,13 +56,14 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 	);
 
 	encoder_reader u_encoder_reader (
-		.i_clk     (i_clk          ),
-		.i_rst_n   (i_rst_n        ),
-		.i_a       (i_enc_a        ),
-		.i_b       (i_enc_b        ),
-		.i_polarity(i_param_enc_pol),
-		.o_step    (step_trigger   ),
-		.o_polarity(step_pol       )
+		.i_clk       (i_clk          ),
+		.i_rst_n     (i_rst_n        ),
+		.i_a         (i_enc_a        ),
+		.i_b         (i_enc_b        ),
+		.i_polarity  (i_param_enc_pol),
+		.o_step      (step_trigger   ),
+		.o_polarity  (step_pol       ),
+		.o_dir_change(dir_change     )
 	);
 
 	// 15 bits is enough to have 30km/h over 1 sec.
@@ -79,7 +73,7 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 		.i_spd_trigger (step_trigger        ),
 		.i_time_trigger(i_speed_time_base   ),
 		.i_step_size   (1                   ),
-		.i_force_reset (0                   ),
+		.i_force_reset (dir_change          ),
 		.i_unlock      (i_enc_i             ),
 		.o_speed       (measured_speed      ),
 		.o_valid       (measured_speed_valid)
