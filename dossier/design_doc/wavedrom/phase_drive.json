@@ -1,10 +1,10 @@
 {"signal": [
-    {"name"  : "$A_+$"  , "wave": "04.0.."},
-    {"name"  : "$B_+$",   "wave": "0..4.0"},
-     {"name" : "$C_+$",   "wave": "40...4"},
-     {"name" : "$A_-$",   "wave": "0...5."},
-     {"name" : "$B_-$",   "wave": "5.0..."},
-     {"name" : "$C_-$",   "wave": "0.5.0."}
+    {"name"  : "\\phstate{A}{\\phhi}"  , "wave": "04.0.."},
+    {"name"  : "\\phstate{B}{\\phhi}",   "wave": "0..4.0"},
+     {"name" : "\\phstate{C}{\\phhi}",   "wave": "40...4"},
+     {"name" : "\\phstate{A}{\\phlo}",   "wave": "0...5."},
+     {"name" : "\\phstate{B}{\\phlo}",   "wave": "5.0..."},
+     {"name" : "\\phstate{C}{\\phlo}",   "wave": "0.5.0."}
   ],
   "foot": {
     "tock":0

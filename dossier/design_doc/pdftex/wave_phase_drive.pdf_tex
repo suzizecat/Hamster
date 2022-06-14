@@ -1,4 +1,4 @@
-%% Creator: Inkscape inkscape 0.92.5, www.inkscape.org
+%% Creator: Inkscape 1.2 (dc2aedaf03, 2022-05-15), www.inkscape.org
 %% PDF/EPS/PS + LaTeX output extension by Johan Engelen, 2010
 %% Accompanies image file 'wave_phase_drive.pdf' (pdf, eps, ps)
 %%
@@ -38,7 +38,7 @@
   \newcommand*\fsize{\dimexpr\f@size pt\relax}%
   \newcommand*\lineheight[1]{\fontsize{\fsize}{#1\fsize}\selectfont}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{255bp}%
+    \setlength{\unitlength}{300bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -50,27 +50,27 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.58823529)%
+  \begin{picture}(1,0.5)%
     \lineheight{1}%
     \setlength\tabcolsep{0pt}%
     \put(0,0){\includegraphics[width=\unitlength,page=1]{wave_phase_drive.pdf}}%
-    \put(0.29558824,0.01323529){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
-    \put(0.41323529,0.01323529){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}1\end{tabular}}}}%
-    \put(0.53088235,0.01323529){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}2\end{tabular}}}}%
-    \put(0.64852941,0.01323529){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}3\end{tabular}}}}%
-    \put(0.76617647,0.01323529){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}4\end{tabular}}}}%
-    \put(0.88382353,0.01323529){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}5\end{tabular}}}}%
-    \put(0.20735294,0.52794118){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}$A_+$\end{tabular}}}}%
+    \put(0.40125,0.01125){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}0\end{tabular}}}}%
+    \put(0.50125,0.01125){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}1\end{tabular}}}}%
+    \put(0.60125,0.01125){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}2\end{tabular}}}}%
+    \put(0.70125,0.01125){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}3\end{tabular}}}}%
+    \put(0.80125,0.01125){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}4\end{tabular}}}}%
+    \put(0.90125,0.01125){\makebox(0,0)[t]{\lineheight{1.25}\smash{\begin{tabular}[t]{c}5\end{tabular}}}}%
+    \put(0.32625001,0.44875){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}\phstate{A}{\phhi}\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=2]{wave_phase_drive.pdf}}%
-    \put(0.20735294,0.43970588){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}$B_+$\end{tabular}}}}%
+    \put(0.32625001,0.37375){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}\phstate{B}{\phhi}\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=3]{wave_phase_drive.pdf}}%
-    \put(0.20735294,0.35147059){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}$C_+$\end{tabular}}}}%
+    \put(0.32625,0.29875){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}\phstate{C}{\phhi}\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=4]{wave_phase_drive.pdf}}%
-    \put(0.20735294,0.26323529){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}$A_-$\end{tabular}}}}%
+    \put(0.32625001,0.22375){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}\phstate{A}{\phlo}\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=5]{wave_phase_drive.pdf}}%
-    \put(0.20735294,0.175){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}$B_-$\end{tabular}}}}%
+    \put(0.32625001,0.14875){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}\phstate{B}{\phlo}\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=6]{wave_phase_drive.pdf}}%
-    \put(0.20735294,0.08676471){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}$C_-$\end{tabular}}}}%
+    \put(0.32625,0.07375){\color[rgb]{0,0.25490196,0.76862745}\makebox(0,0)[rt]{\lineheight{1.25}\smash{\begin{tabular}[t]{r}\phstate{C}{\phlo}\end{tabular}}}}%
     \put(0,0){\includegraphics[width=\unitlength,page=7]{wave_phase_drive.pdf}}%
   \end{picture}%
 \endgroup%

@@ -1,0 +1,44 @@
+\section{SPI Système}
+\subsection{Description}
+
+Hamster peut communiquer en tant qu'esclave SPI.
+
+L'interface SPI utilisée est configurée en mode 0 (CPHA=0, CPOL=0). Les caractèristiques de cette interface SPI sont décrites \cref{tab-spi-parameters}.
+Le système capture donc les données sur front \emph{montant} de l'horloge SPI et envoie de nouvelles données sur front \emph{descendant}.
+Il est nécessaire que l'horloge SPI \sclk soit au moins 5\todo{check} fois plus lente que l'horloge système \clksys.
+
+D'une manière générale, on considèrera comme fréquence maximale pour le SPI $\freq{\sclk}$ = 10 \mega\hertz
+
+Un registre de test est disponible à l'adresse 0xA9 et vaut toujours 0xCAFE.
+
+\begin{table}[htbp]
+    \centering
+\begin{spectable}
+    Fréquence d'horloge & \freq\sclk & & & 10 \mega\hertz \\
+    Phase d'horloge& CPHA & & 0 & \\
+    Polarité d'horloge & CPOL & & 0 & \\
+    \hline
+    Bits par mot & & & 16 & \\
+    Premier bit envoyé & & & MSB & \\ 
+    \hline
+\end{spectable}
+\caption{Paramètres du SPI système}
+\label{tab-spi-parameters}
+\end{table}
+
+
+\subsection{Commandes}
+
+\subsubsection{0x01 - READ}
+La commande SPI READ permet de lire une ou plusieurs valeurs consécutives dans la banque de registre de Hamster.
+Le format général d'une lecture simple est décrit \cref{fig-wave-spi-read-comptest}. 
+Le maître initie la commande en passant \csn à 0 et présente le premier bit (MSB) de la commmande READ \emph{avant} le front montant de l'horloge.
+
+
+\begin{figure}[h]
+    \centering
+    \def\svgwidth{17cm}
+    \import{pdftex/}{wave_spi_read_test.pdf_tex}
+    \caption{Exemple de la lecture du registre de test}
+    \label{fig-wave-spi-read-comptest}
+\end{figure}

@@ -1,0 +1,9 @@
+{"signal": [
+    {"name"  : "\\csn", "wave": "10................................1"},
+    {"name"  : "\\sclk","wave": "l.P...............................l"},
+    {"name"  : "MOSI",      "wave": "x3.......4.......0.................", "data":["READ","ADRESSE","DONNEE"]},
+    {"name"  : "MISO",      "wave": "0................5...............0.", "data":["RESULTAT"]}
+  ],
+  "config": { "skin": "narrow" },
+  "foot":{"tick":-1, "every":8}
+}

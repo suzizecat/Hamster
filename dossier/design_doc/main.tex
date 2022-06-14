@@ -6,6 +6,7 @@
 %\usepackage[colorlinks=true,allcolors=linkColor,citecolor=blue]{hyperref}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[amssymb,textstyle]{SIunits}
 \usepackage{graphicx}
 \usepackage{color}
 \usepackage{import}
@@ -13,12 +14,16 @@
 \usepackage[nologo]{pagegarde}
 \usepackage{todonotes} 
 \usepackage[T1]{fontenc}   
-
 \usepackage[french]{babel}
 \usepackage{xspace}
 \usepackage{cleveref}
 
+\addto\captionsfrench{\def\tablename{\textsc{Tableau}}}
+\renewcommand{\arraystretch}{1.5}
 \renewcommand{\familydefault}{\sfdefault}
+
+
+
 \logo{pdf/logo.pdf}
 \illustration{pdf/logo.pdf}
 \input{macros.tex}
@@ -39,4 +44,5 @@
 
 \input{introduction/_intro_top.tex}
 \input{timing_cmd_mot/_cmd_mot_main.tex}
+\input{specification/spec_top.tex}
 \end{document}
