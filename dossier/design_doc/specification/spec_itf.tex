@@ -33,7 +33,8 @@ Un registre de test est disponible à l'adresse 0xA9 et vaut toujours 0xCAFE.
 La commande SPI READ permet de lire une ou plusieurs valeurs consécutives dans la banque de registre de Hamster.
 Le format général d'une lecture simple est décrit \cref{fig-wave-spi-read-comptest}. 
 Le maître initie la commande en passant \csn à 0 et présente le premier bit (MSB) de la commmande READ \emph{avant} le front montant de l'horloge.
-
+La commande est sur 8 bits et est exprimée par la valeur 0x01. L'adresse à lire est ensuite fournie (ici 0xA9 pour la lecture de COMPTEST).
+Lorsque les 16 bits de la commande ont été transmis, Hamster ne prends plus en compte les données venant du maître sur MOSI et va transmettre le contenu du
 
 \begin{figure}[h]
     \centering
