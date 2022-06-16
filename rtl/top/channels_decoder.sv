@@ -2,23 +2,24 @@ module channels_decoder #(
 	parameter int K_NCHAN = 4 ,
 	parameter int K_RES   = 10
 ) (
-	input  logic                                    i_clk       , //!
-	input  logic                                    i_rst_n     , //!
+	input  logic                                    i_clk           , //!
+	input  logic                                    i_rst_n         , //!
 	//Inputs
-	input  logic [K_NCHAN-1:0][$clog2(K_NCHAN)-1:0] i_chan_route, //!
-	input  logic [K_NCHAN-1:0]                      i_channels  , //!
-	input  logic [  K_RES-1:0]                      i_deadzone  , //!
-	input  logic                                    i_timebase  , //!
-	input  logic [K_NCHAN-1:0]                      i_polarity  , //!
+	input  logic [K_NCHAN-1:0][$clog2(K_NCHAN)-1:0] i_chan_route    , //!
+	input  logic [K_NCHAN-1:0]                      i_channels      , //!
+	input  logic [  K_RES-1:0]                      i_deadzone      , //!
+	input  logic [  K_RES-1:0]                      i_skip_threshold, //!
+	input  logic                                    i_timebase      , //!
+	input  logic [K_NCHAN-1:0]                      i_polarity      , //!
 	//Digital outputs
-	output logic                                    o_boost     , //!
-	output logic                                    o_beep      , //!
-	output logic                                    o_rev       , //!
-	output logic                                    o_brake     , //!
-	output logic                                    o_direction , //!
+	output logic                                    o_boost         , //!
+	output logic                                    o_beep          , //!
+	output logic                                    o_rev           , //!
+	output logic                                    o_brake         , //!
+	output logic                                    o_direction     , //!
 	// Analog values
-	output logic [  K_RES-1:0]                      o_steer     ,
-	output logic [  K_RES-1:0]                      o_power       //!
+	output logic [  K_RES-1:0]                      o_steer         ,
+	output logic [  K_RES-1:0]                      o_power           //!
 );
 
 	localparam int K_CHAN_DIRECTION = 0;
@@ -53,6 +54,7 @@ module channels_decoder #(
 				.i_timebase     (i_timebase       ),
 				.i_pwm          (i_channels[i]    ),
 				.i_polarity     (1'b0             ),
+				.i_skip         (i_skip_threshold ),
 				.o_capture_start(                 ),
 				.o_capture_done (gen_capture_done ),
 				.o_capture_value(gen_capture_value)
@@ -60,7 +62,7 @@ module channels_decoder #(
 
 			assign capture_done[i]   = gen_capture_done;
 			assign analog_values[i]  = signed'(gen_capture_value) - signed'(K_RES'(2**(K_RES-1)));
-			assign dead_value        = {1'b0,gen_capture_value[K_RES-2:0]} < i_deadzone;
+			assign dead_value        = {1'b0,{(K_RES-1){analog_values[i][K_RES-1]}}^analog_values[i][K_RES-2:0]} < i_deadzone;
 			assign dig_values_pos[i] = (~gen_capture_value[K_RES-1]) & (~dead_value);
 			assign dig_values_neg[i] = ( gen_capture_value[K_RES-1]) & (~dead_value);
 

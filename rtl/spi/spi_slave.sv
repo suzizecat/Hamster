@@ -44,16 +44,11 @@ module spi_slave #(parameter  K_DWIDTH = 16) (
 			previous_spi_clk     <= 0;
 			previous_csn         <= 0;
 		end else begin
-			spi_clk_rising_edge  <= 0;
-			spi_clk_falling_edge <= 0;
-			previous_spi_clk     <= i_cpol;
+			previous_spi_clk     <= i_spi_clk;
+			spi_clk_rising_edge  <= ~previous_spi_clk & i_spi_clk;
+			spi_clk_falling_edge <= previous_spi_clk & ~i_spi_clk;
 			previous_csn         <= i_cs_n;
 			start_sequence       <= ~i_cs_n & previous_csn | trigger_new_sequence;
-			if (~ i_cs_n) begin
-				previous_spi_clk     <= i_spi_clk;
-				spi_clk_rising_edge  <= ~previous_spi_clk & i_spi_clk;
-				spi_clk_falling_edge <= previous_spi_clk & ~i_spi_clk;
-			end
 		end
 	end
 

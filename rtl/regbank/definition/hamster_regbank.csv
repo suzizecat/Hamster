@@ -19,21 +19,22 @@
  ,RADIO3DEAD           ,0x05           ,0x0004               ,15:0  ,VAL        ,RW     ,
  ,RADIO4DEAD           ,0x06           ,0x0004               ,15:0  ,VAL        ,RW     ,
  ,                     ,               ,                     ,      ,           ,       ,
- ,MOT1CR               ,0x07           ,0x0000               ,      ,           ,       ,
+ ,RADIOSKIP            ,0x07           ,100                  ,15:0  ,VAL        ,RW     ,Number of skip to perform on RADIO computation
+ ,MOT1CR               ,0x08           ,0x0000               ,      ,           ,       ,
  ,                     ,               ,                     ,2:0   ,I_STEP     ,RW     ,Step to select upon I pulse
  ,                     ,               ,                     ,4     ,ENC_POL    ,RW     ,Encoder polarity
  ,                     ,               ,                     ,5     ,I_EN       ,RW     ,Use reset upon I pulse
  ,                     ,               ,                     ,6     ,PWR_MSB    ,RW     ,"Use only MSB to carry over the power, otherwise it will be LSB"
  ,                     ,               ,                     ,7     ,PWR_ALL    ,RW     ,Override on_msb and use all output for power
- ,MOT1PWM              ,0x08           ,0x100                ,9:0   ,MAX        ,RW     ,Motor1 PWM
- ,MOT2CR               ,0x09           ,0x0000               ,      ,           ,       ,
+ ,MOT1PWM              ,0x09           ,0x100                ,9:0   ,MAX        ,RW     ,Motor1 PWM
+ ,MOT2CR               ,0x0A           ,0x0000               ,      ,           ,       ,
  ,                     ,               ,                     ,2:0   ,I_STEP     ,RW     ,Step to select upon I pulse
  ,                     ,               ,                     ,4     ,ENC_POL    ,RW     ,Encoder polarity
  ,                     ,               ,                     ,5     ,I_EN       ,RW     ,Use reset upon I pulse
  ,                     ,               ,                     ,6     ,PWR_MSB    ,RW     ,"Use only MSB to carry over the power, otherwise it will be LSB"
  ,                     ,               ,                     ,7     ,PWR_ALL    ,RW     ,Override on_msb and use all output for power
  ,                     ,               ,                     ,      ,           ,       ,
- ,MOT2PWM              ,0x0A           ,0x100                ,9:0   ,MAX        ,RW     ,Motor2 PWM
+ ,MOT2PWM              ,0x0B           ,0x100                ,9:0   ,MAX        ,RW     ,Motor2 PWM
  ,                     ,               ,                     ,      ,           ,       ,
- ,SPDLOW               ,0x0B           ,2640                 ,14:0  ,SPDLOWTHR  ,       ,Low speed threshold to use direct drive method
+ ,SPDLOW               ,0x0C           ,2640                 ,14:0  ,SPDLOWTHR  ,       ,Low speed threshold to use direct drive method
  ,COMPTEST             ,0xA9           ,0xCAFE               ,15:0  ,COMP_TEST  ,RO     ,
