@@ -31,7 +31,7 @@ class SPICommandItem(SPIDataItemBase):
 
     @property
     def word_value(self):
-        return self.command & 0xFF << 8 | self.arg & 0xFF
+        return (self.command & 0xFF) << 8 | self.arg & 0xFF
 
     @property
     def data(self):

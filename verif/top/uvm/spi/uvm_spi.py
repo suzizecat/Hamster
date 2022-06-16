@@ -18,20 +18,24 @@ class SPIDriver(uvm_driver):
         itf : vipy.bus.spi.SPIInterface = ConfigDB().get(self,"","interface")
         clk_period = ConfigDB().get(self,"","clkperiod")
         self.bridge = vipy.bus.spi.SPIDriver(spi_mode,itf,clk_period)
+        self.bridge.csn_pulse_per_word = False
 
     async def run_phase(self):
+        await self.bridge.reset()
         self.bridge.start()
         while True:
             item : T.Any[SPIControlItemBase,SPIDataItemBase] = await self.seq_item_port.get_next_item()
-            
+            cocotb.log.info(item)
             if isinstance(item,SPIDataItemBase) :
+                cocotb.log.info(f"Sending data {item.data}")
                 self.bridge.to_send.put_nowait(item.data)
             elif isinstance(item,SPIControlItemBase):
                 if isinstance(item,SPIEndOfFrameItem) :
+                    
                     await self.bridge.to_send.is_empty.wait()
                     await self.bridge.evt.word_done.wait()
                 elif isinstance(item,SPIWaitItem) :
-                    await Timer(item.delay)
+                    await Timer(*item.delay)
             self.seq_item_port.item_done()
 
 class SPIMonitor(uvm_monitor):    
