@@ -56,13 +56,17 @@ async def read_spi(dut):
     dut.i_rst_n.value = 1
     clk = await cocotb.start(Clock(dut.i_clk,1,"ns").start())
     await Timer(100,"ns")
-
+    spi_mode = 0
     spi_drv = SPIDriver(SerialMode.MASTER,spi_itf,(10,"ns"))
     spi_drv.csn_pulse_per_word = False
+    spi_drv.spi_mode = spi_mode
     
     spi_mon_so = SPIMonitor(SerialMode.MASTER,spi_itf)
     spi_mon_mo = SPIMonitor(SerialMode.SLAVE,spi_itf)
+    spi_mon_so.spi_mode = spi_mode
+    spi_mon_mo.spi_mode = spi_mode
     spi_mon_mo.start()
+    
     spi_mon_so.start()
     
     spi_drv.start()
@@ -80,7 +84,7 @@ async def read_spi(dut):
                 cocotb.log.info(f"Recieved word {await spi_mon_so.to_handle.get()}")
 
     async def timer():
-        for i in range(10):
+        for i in range(5):
             cocotb.log.info(i)
             await Timer(10,"us")
 
@@ -95,12 +99,20 @@ async def read_spi(dut):
     await spi_drv.evt.word_done.wait()
     await Timer(1,"us")
 
-    
+    #spi_drv.to_send.put_nowait(DataWord(0x8001))
     spi_drv.to_send.put_nowait(spi_read(0xA9))
     spi_drv.to_send.put_nowait(spi_nop())
     
     await spi_drv.to_send.is_empty.wait()
     await spi_drv.evt.word_done.wait()
+    await Timer(500,"ns")
+
+    spi_drv.to_send.put_nowait(spi_read(0xA9))
+    spi_drv.to_send.put_nowait(spi_nop())
+    
+    await spi_drv.to_send.is_empty.wait()
+    await spi_drv.evt.word_done.wait()
+    cocotb.log.info("Second wait")
     await Timer(500,"ns")
     cocotb.log.info("Sending next transaction")
     spi_drv.to_send.put_nowait(spi_read(0x00))
@@ -128,4 +140,21 @@ async def read_spi(dut):
     await Join(sim_done)
     tsk_master.kill()
     tsk_slave.kill()
+    clk.kill()
+
+
+
+
+
+@cocotb.test()
+async def radio(dut) : 
+    await full_reset(dut)
+    clk = await cocotb.start(Clock(dut.i_clk,1,"ns").start())
+    await Timer(100,"ns")
+    dut.i_rst_n.value = 1
+    await Timer(1,"us")
+    dut.i_channels.value = 0x1
+    await ClockCycles(dut.i_clk,102+128 + 10)
+    dut.i_channels.value = 0x0
+    await Timer(1,"us")
     clk.kill()
