@@ -34,7 +34,8 @@ def main():
 
     chip.set('input',"verilog", sources)             # define list of source files
     chip.set('option','frontend', 'systemverilog')
-    chip.set('constraint','worst','file','hamster.sdc')        # set constraints file
+    chip.set('input', 'sdc', 'hamster.sdc')     # set constraints file
+    #chip.set('constraint','worst','file','hamster.sdc')        # set constraints file
     
     chip.set('option','idir','../rtl/regbank')
 
