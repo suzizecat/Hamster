@@ -45,7 +45,7 @@ async def read_spi(dut):
     encoder.speed_tr_per_sec = 100000
     await encoder.start()
 
-    spi_itf = SPIBase.SPIInterface(
+    spi_itf = SPIInterface(
         mosi=dut.i_mosi,
         miso=dut.o_miso,
         clk=dut.i_spi_clk,
@@ -93,13 +93,14 @@ async def read_spi(dut):
     sim_done = cocotb.start_soon(timer())
 
     await Timer(500,"ns")
-    spi_drv.to_send.put_nowait(spi_write(0x0B))
+    # MOT2 PWM
+    spi_drv.to_send.put_nowait(spi_write(0x23))
     spi_drv.to_send.put_nowait(DataWord(1000))
     await spi_drv.to_send.is_empty.wait()
     await spi_drv.evt.word_done.wait()
     await Timer(1,"us")
 
-    #spi_drv.to_send.put_nowait(DataWord(0x8001))
+    #Test
     spi_drv.to_send.put_nowait(spi_read(0xA9))
     spi_drv.to_send.put_nowait(spi_nop())
     
@@ -127,13 +128,13 @@ async def read_spi(dut):
     await Timer(35,"us")
     spi_drv.to_send.put_nowait(spi_write(0x07))
     spi_drv.to_send.put_nowait(DataWord(1 << 6))
-    #spi_drv.to_send.put_nowait(spi_nop())
+    
     
     await spi_drv.to_send.is_empty.wait()
     await spi_drv.evt.word_done.wait()
     await Timer(1,"us")
-
-    spi_drv.to_send.put_nowait(spi_read(0x07))
+    # RADIOSKIP
+    spi_drv.to_send.put_nowait(spi_read(0x17))
     spi_drv.to_send.put_nowait(spi_nop())
     await spi_drv.to_send.is_empty.wait()
     await spi_drv.evt.word_done.wait()
@@ -153,8 +154,40 @@ async def radio(dut) :
     await Timer(100,"ns")
     dut.i_rst_n.value = 1
     await Timer(1,"us")
-    dut.i_channels.value = 0x1
-    await ClockCycles(dut.i_clk,102+128 + 10)
-    dut.i_channels.value = 0x0
+
+    itf = EncoderABI.ABIInterface(a=dut.i_enc1_a,b=dut.i_enc1_b,i=dut.i_enc1_i)
+    encoder = EncoderABI(300,itf=itf)
+    encoder.speed_tr_per_sec = 100000
+    await encoder.start()
+
+    spi_itf = SPIInterface(
+        mosi=dut.i_mosi,
+        miso=dut.o_miso,
+        clk=dut.i_spi_clk,
+        csn=dut.i_cs_n
+    )
+
+    spi_mode = 0
+    spi_drv = SPIDriver(SerialMode.MASTER,spi_itf,(10,"ns"))
+    spi_drv.csn_pulse_per_word = False
+    spi_drv.spi_mode = spi_mode
+    spi_drv.start()
     await Timer(1,"us")
+    spi_drv.to_send.put_nowait(spi_write(0x30))
+    spi_drv.to_send.put_nowait(DataWord(1000))
+    await Timer(1,"us")
+    # spi_drv.to_send.put_nowait(spi_write(0x20))
+    # spi_drv.to_send.put_nowait(DataWord(1 << 6))
+
+    dut.i_channels.value = 0b0010
+    await ClockCycles(dut.i_clk,102+128 + 35)
+    dut.i_channels.value = 0
+    await Timer(50,"us")
+    spi_drv.to_send.put_nowait(spi_write(0x20))
+    spi_drv.to_send.put_nowait(DataWord(1 << 6))
+    await Timer(25,"us")
+    dut.i_channels.value = 0b0010
+    await ClockCycles(dut.i_clk,102+128 + 86)
+    dut.i_channels.value = 0
+    await Timer(25,"us")
     clk.kill()

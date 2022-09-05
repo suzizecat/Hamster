@@ -58,6 +58,10 @@ module core_top (
 	logic [PWM_RES-1:0] cmd_steer    ;
 	logic [PWM_RES-1:0] cmd_power    ;
 
+	logic [PWM_RES-1:0] rescaled_cmd_power;
+
+	logic cmd_power_done;
+
 	logic time_speed;
 
 	assign radio_deadzones = {
@@ -132,7 +136,6 @@ module core_top (
 		.o_tick (time_speed)
 	);
 
-
 	channels_decoder #(
 		.K_NCHAN(4      ),
 		.K_RES  (PWM_RES)
@@ -143,7 +146,7 @@ module core_top (
 		.i_channels      (i_channels                            ),
 		.i_deadzone      (radio_deadzones[0]                    ),
 		.i_skip_threshold(regbank_out.RADIOSKIP_VAL[PWM_RES-1:0]),
-		.i_timebase      (1'b1                                 ),
+		.i_timebase      (1'b1                                  ),
 		.i_polarity      (radio_pol                             ),
 		.o_boost         (cmd_boost                             ),
 		.o_beep          (cmd_beep                              ),
@@ -151,7 +154,24 @@ module core_top (
 		.o_brake         (cmd_brake                             ),
 		.o_direction     (cmd_direction                         ),
 		.o_steer         (cmd_steer                             ),
-		.o_power         (cmd_power                             )
+		.o_power         (cmd_power                             ),
+		.o_power_done    (cmd_power_done                        )
+	);
+
+	div #(
+		.WIDTH(PWM_RES),
+		.FBITS(0      )
+	) u_div_power (
+		.i_clk  (i_clk                                   ),
+		.i_start(cmd_power_done                          ),
+		.o_busy (                                        ),
+		.o_valid(                                        ),
+		.o_dbz  (                                        ),
+		.o_ovf  (                                        ),
+		.i_x    (cmd_power                               ),
+		.i_y    (regbank_out.RADIOPWRDIV_DIV[PWM_RES-1:0]),
+		.o_q    (rescaled_cmd_power                      ),
+		.o_r    (                                        )
 	);
 
 	motor_control_top #(.K_PWMRES(PWM_RES)) u_mot_1 (
@@ -162,6 +182,7 @@ module core_top (
 		.i_enc_i                   (i_enc1_i                            ),
 		.i_brake                   (cmd_brake                           ),
 		.i_reverse                 (cmd_rev                             ),
+		.i_pwr_command             (rescaled_cmd_power[3:0]             ),
 		.i_pwm_command             (cmd_power                           ),
 		.i_speed_time_base         (time_speed                          ),
 		.i_param_enc_pol           (regbank_out.MOT1CR_ENC_POL          ),
@@ -182,6 +203,7 @@ module core_top (
 		.i_enc_i                   (i_enc2_i                            ),
 		.i_brake                   (cmd_brake                           ),
 		.i_reverse                 (cmd_rev                             ),
+		.i_pwr_command             (rescaled_cmd_power[3:0]             ),
 		.i_pwm_command             (cmd_power                           ),
 		.i_speed_time_base         (time_speed                          ),
 		.i_param_enc_pol           (regbank_out.MOT2CR_ENC_POL          ),

@@ -19,7 +19,8 @@ module channels_decoder #(
 	output logic                                    o_direction     , //!
 	// Analog values
 	output logic [  K_RES-1:0]                      o_steer         ,
-	output logic [  K_RES-1:0]                      o_power           //!
+	output logic [  K_RES-1:0]                      o_power         , //!
+	output logic                                    o_power_done
 );
 
 	localparam int K_CHAN_DIRECTION = 0;
@@ -78,10 +79,15 @@ module channels_decoder #(
 			o_power     <= 0;
 			o_rev       <= 0;
 			o_steer     <= 0;
+
+			o_power_done <= 0;
 		end else begin
+			o_power_done <= 0;
 			if (capture_done[power_selection]) begin
 				o_power <= analog_values[power_selection];
 				o_brake <= i_polarity[power_selection] ? dig_values_neg[power_selection] : dig_values_pos[power_selection];
+
+				o_power_done <= 1;
 			end
 			if (capture_done[direction_selection]) begin
 				o_steer     <= analog_values[direction_selection];

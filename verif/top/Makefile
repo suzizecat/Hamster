@@ -18,6 +18,7 @@ VERILOG_SOURCES += $(SRC_PATH)/regbank/hamster_regbank_in_if.sv
 VERILOG_SOURCES += $(SRC_PATH)/regbank/hamster_regbank_out_if.sv
 VERILOG_SOURCES += $(SRC_PATH)/regbank/hamster_regbank.sv
 VERILOG_SOURCES += $(SRC_PATH)/pwm/pwm_capture.sv
+VERILOG_SOURCES += $(SRC_PATH)/maths/div.sv
 VERILOG_SOURCES += $(SRC_PATH)/top/channels_decoder.sv
 VERILOG_SOURCES += $(SRC_PATH)/top/timebase.sv
 VERILOG_SOURCES += $(SRC_PATH)/top/spi_rb_interface.sv

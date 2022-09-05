@@ -4,46 +4,53 @@ import siliconcompiler                            # import python package
 import os  
 
 def main():
-    chip = siliconcompiler.Chip()                 # create chip object
-    root_peripheral = "../"
+    chip = siliconcompiler.Chip(design="core_top")                 # create chip object
+    root_peripheral = "../rtl"
     sources = [
-        "peripherals/motor/rtl/encoder_reader.sv",
-        "peripherals/motor/rtl/motor_control_top.sv",
-        "peripherals/motor/rtl/pattern_generator.sv",
+        "/pwm/pwm_gen_left.sv",
+        "/pwm/pwm_capture.sv",
 
-        "peripherals/regbank/rtl/reg_rdchan_if.sv",
-        "peripherals/regbank/rtl/reg_wrchan_if.sv",
-        "peripherals/regbank/rtl/hamster_regbank_in_if.sv",
-        "peripherals/regbank/rtl/hamster_regbank_out_if.sv",
-        "peripherals/regbank/rtl/hamster_regbank.sv",
+        "/maths/div.sv",
+
+        "/motor/encoder_reader.sv",
+        "/motor/motor_control_top.sv",
+        "/motor/pattern_generator.sv",
+        "/motor/speed_meter.sv",
+
+        "/regbank/reg_rdchan_if.sv",
+        "/regbank/reg_wrchan_if.sv",
+        "/regbank/hamster_regbank_in_if.sv",
+        "/regbank/hamster_regbank_out_if.sv",
+        "/regbank/hamster_regbank.sv",
         
-        "peripherals/pwm/rtl/pwm_gen_left.sv",
-        "peripherals/pwm/rtl/pwm_capture.sv",
+        "/spi/spi_slave.sv",
         
-        "peripherals/spi/rtl/spi_slave.sv",
-        
-        "peripherals/top/rtl/channels_decoder.sv",
-        "peripherals/top/rtl/spi_rb_interface.sv",
-        "peripherals/top/rtl/core_top.sv"
+        "/top/timebase.sv",
+        "/top/channels_decoder.sv",
+        "/top/spi_rb_interface.sv",
+        "/top/core_top.sv"
     ]
     sources = [f"{root_peripheral}{x}" for x in sources]
-    chip.set('source', sources)             # define list of source files
-    chip.set('idir','../peripherals/regbank/rtl')
-    chip.set('design', 'core_top')               # set top module
-    #chip.set('design', 'motor_control_top')               # set top module
-    chip.set('constraint', 'hamster.sdc')        # set constraints file
-    chip.set('frontend', 'systemverilog')
 
-    chip.set('asic', 'density', 20, clobber=False)
+    chip.set('input',"verilog", sources)             # define list of source files
+    chip.set('option','frontend', 'systemverilog')
+    chip.set('constraint','worst','file','hamster.sdc')        # set constraints file
+    
+    chip.set('option','idir','../rtl/regbank')
 
-    #chip.target('asicflow_skywater130')          # load predefined target
-    chip.target('asicflow_csky130hd')           # load predefined target
+    chip.set('asic', 'diearea', [(0,0),(2920,3520)])
+    chip.set('asic', 'corearea', [(10,10),(2910,3510)])
+
+    chip.load_target('skywater130_demo')          # load predefined target
+    #chip.target('asicflow_csky130hd')           # load predefined target
     #chip.target('asicflow_idealcsky130hd')           # load predefined target
     #chip.target('asicflow_freepdk45')           # load predefined target
     #update_yosys_options(chip)
+    #quit()
+
     chip.run()                                    # run compilation
     chip.summary()                                # print results summary
-    chip.show()                                   # show layout file
+    # chip.show()                                   # show layout file
 
 def configure_chip(design) :
     pass

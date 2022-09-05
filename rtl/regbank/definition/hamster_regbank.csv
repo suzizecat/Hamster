@@ -4,37 +4,45 @@
  ,address bus size     ,8              ,                     ,      ,           ,       ,
  ,Register name        ,Address Offset ,Register reset value ,Bits  ,Field name ,Access ,Comment
  ,COMPID               ,0x00           ,0xA001               ,15:0  ,COMP_ID    ,RO     ,
- ,RADIOCFGR            ,0x01           ,0x3210               ,      ,           ,       ,
+ ,RADIOCFGR            ,0x11           ,0x3210               ,      ,           ,       ,
  ,                     ,               ,                     ,1:0   ,DIR_CHAN   ,RW     ,
  ,                     ,               ,                     ,5:4   ,PWR_CHAN   ,RW     ,
  ,                     ,               ,                     ,9:8   ,REV_CHAN   ,RW     ,
  ,                     ,               ,                     ,13:12 ,OTHER_CHAN ,RW     ,
- ,RADIOPOL             ,0x02           ,0x0000               ,      ,           ,       ,
+ ,RADIOPOL             ,0x12           ,0x0000               ,      ,           ,       ,
  ,                     ,               ,                     ,0     ,DIR_POL    ,RW     ,
  ,                     ,               ,                     ,1     ,PWR_POL    ,RW     ,
  ,                     ,               ,                     ,2     ,REV_POL    ,RW     ,
  ,                     ,               ,                     ,3     ,OTHER_POL  ,RW     ,
- ,RADIO1DEAD           ,0x03           ,0x0004               ,15:0  ,VAL        ,RW     ,
- ,RADIO2DEAD           ,0x04           ,0x0004               ,15:0  ,VAL        ,RW     ,
- ,RADIO3DEAD           ,0x05           ,0x0004               ,15:0  ,VAL        ,RW     ,
- ,RADIO4DEAD           ,0x06           ,0x0004               ,15:0  ,VAL        ,RW     ,
+ ,RADIO1DEAD           ,0x13           ,0x0004               ,15:0  ,VAL        ,RW     ,
+ ,RADIO2DEAD           ,0x14           ,0x0004               ,15:0  ,VAL        ,RW     ,
+ ,RADIO3DEAD           ,0x15           ,0x0004               ,15:0  ,VAL        ,RW     ,
+ ,RADIO4DEAD           ,0x16           ,0x0004               ,15:0  ,VAL        ,RW     ,
  ,                     ,               ,                     ,      ,           ,       ,
- ,RADIOSKIP            ,0x07           ,100                  ,15:0  ,VAL        ,RW     ,Number of skip to perform on RADIO computation
- ,MOT1CR               ,0x08           ,0x0000               ,      ,           ,       ,
+ ,RADIOSKIP            ,0x17           ,100                  ,15:0  ,VAL        ,RW     ,Number of skip to perform on RADIO computation
+ ,RADIOPWRDIV          ,0x18           ,10                   ,15:0  ,DIV        ,RW     ,Divider for POWER steps computations
+ ,MOT1CR               ,0x20           ,0x0000               ,      ,           ,       ,
  ,                     ,               ,                     ,2:0   ,I_STEP     ,RW     ,Step to select upon I pulse
  ,                     ,               ,                     ,4     ,ENC_POL    ,RW     ,Encoder polarity
  ,                     ,               ,                     ,5     ,I_EN       ,RW     ,Use reset upon I pulse
  ,                     ,               ,                     ,6     ,PWR_MSB    ,RW     ,"Use only MSB to carry over the power, otherwise it will be LSB"
  ,                     ,               ,                     ,7     ,PWR_ALL    ,RW     ,Override on_msb and use all output for power
- ,MOT1PWM              ,0x09           ,0x100                ,9:0   ,MAX        ,RW     ,Motor1 PWM
- ,MOT2CR               ,0x0A           ,0x0000               ,      ,           ,       ,
+ ,MOT1PWM              ,0x21           ,0x100                ,9:0   ,MAX        ,RW     ,Motor1 PWM
+ ,MOT2CR               ,0x22           ,0x0000               ,      ,           ,       ,
  ,                     ,               ,                     ,2:0   ,I_STEP     ,RW     ,Step to select upon I pulse
  ,                     ,               ,                     ,4     ,ENC_POL    ,RW     ,Encoder polarity
  ,                     ,               ,                     ,5     ,I_EN       ,RW     ,Use reset upon I pulse
  ,                     ,               ,                     ,6     ,PWR_MSB    ,RW     ,"Use only MSB to carry over the power, otherwise it will be LSB"
  ,                     ,               ,                     ,7     ,PWR_ALL    ,RW     ,Override on_msb and use all output for power
  ,                     ,               ,                     ,      ,           ,       ,
- ,MOT2PWM              ,0x0B           ,0x100                ,9:0   ,MAX        ,RW     ,Motor2 PWM
+ ,MOT2PWM              ,0x23           ,0x100                ,9:0   ,MAX        ,RW     ,Motor2 PWM
  ,                     ,               ,                     ,      ,           ,       ,
- ,SPDLOW               ,0x0C           ,2640                 ,14:0  ,SPDLOWTHR  ,       ,Low speed threshold to use direct drive method
+ ,SPDLOW               ,0x30           ,2640                 ,14:0  ,SPDLOWTHR  ,       ,Low speed threshold to use direct drive method
+ ,POWERCTRL1           ,0x40           ,0x0000               ,      ,           ,       ,
+ ,                     ,               ,                     ,0     ,STOPEN     ,RW     ,Low voltage hard stop enable
+ ,                     ,               ,                     ,1     ,CTRLEN     ,RW     ,Low voltage power control enable
+ ,                     ,               ,                     ,15:8  ,HSTHR      ,RW     ,Hard stop threshold
+ ,POWERTHR             ,0x41           ,0x0000               ,      ,           ,       ,
+ ,                     ,               ,                     ,7:0   ,LTHR       ,RW     ,Low threshold for control mode
+ ,                     ,               ,                     ,15:8  ,HTHR       ,RW     ,High threshold for control mode
  ,COMPTEST             ,0xA9           ,0xCAFE               ,15:0  ,COMP_TEST  ,RO     ,

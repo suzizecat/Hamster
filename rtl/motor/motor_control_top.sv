@@ -1,25 +1,26 @@
 module motor_control_top #(parameter K_PWMRES = 10) (
-	input  logic                i_clk                     , //! Master clock
-	input  logic                i_rst_n                   , //! Master reset
+	input  logic                  i_clk                     , //! Master clock
+	input  logic                  i_rst_n                   , //! Master reset
 	// Encoder input
-	input  logic                i_enc_a                   , //! Encoder A
-	input  logic                i_enc_b                   , //! Encoder B
-	input  logic                i_enc_i                   , //! Encoder I
+	input  logic                  i_enc_a                   , //! Encoder A
+	input  logic                  i_enc_b                   , //! Encoder B
+	input  logic                  i_enc_i                   , //! Encoder I
 	// Commands
-	input  logic                i_brake                   ,
-	input  logic                i_reverse                 ,
-	input  logic [K_PWMRES-1:0] i_pwm_command             , //!Command for the PWM
-	input  logic                i_speed_time_base         , //!
+	input  logic                  i_brake                   ,
+	input  logic                  i_reverse                 ,
+	input  logic [$clog2(11)-1:0] i_pwr_command             ,
+	input  logic [  K_PWMRES-1:0] i_pwm_command             , //!Command for the PWM
+	input  logic                  i_speed_time_base         , //!
 	// Parameters
-	input  logic                i_param_enc_pol           , //! Encoder reader polarity
-	input  logic [         2:0] i_param_i_step            , //! Encoder step for I pulse
-	input  logic                i_param_i_step_en         , //! Encoder step will be forced upon I signal
-	input  logic [K_PWMRES-1:0] i_param_pwm_max           , //! Maximum PWM Value
-	input  logic                i_param_pwr_on_pattern_msb, //!
-	input  logic                i_param_pwr_on_pattern_all, //!
-	input  logic [        14:0] i_param_low_speed_thr     , //! Low speed threshold
+	input  logic                  i_param_enc_pol           , //! Encoder reader polarity
+	input  logic [           2:0] i_param_i_step            , //! Encoder step for I pulse
+	input  logic                  i_param_i_step_en         , //! Encoder step will be forced upon I signal
+	input  logic [  K_PWMRES-1:0] i_param_pwm_max           , //! Maximum PWM Value
+	input  logic                  i_param_pwr_on_pattern_msb, //!
+	input  logic                  i_param_pwr_on_pattern_all, //!
+	input  logic [          14:0] i_param_low_speed_thr     , //! Low speed threshold
 	// Outputs
-	output logic [         5:0] o_cmd                       //! Output to motor driver
+	output logic [           5:0] o_cmd                       //! Output to motor driver
 );
 
 	localparam int K_SPDWIDTH = 15;
@@ -92,7 +93,7 @@ module motor_control_top #(parameter K_PWMRES = 10) (
 		.i_brake             (i_brake                    ),
 		.i_bypass_power      (speed_is_low               ),
 		.i_cmd_on_lsb        (~i_param_pwr_on_pattern_msb),
-		.i_power             (5                          ),
+		.i_power             (i_pwr_command              ),
 		.o_pattern           (o_cmd                      )
 	);
 

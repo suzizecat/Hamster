@@ -5,6 +5,7 @@ from .hamster_tb import HamsterTB
 from .spi.uvm_sequences import *
 
 
+
 class BaseTest(uvm_test):
     def build_phase(self):
         super().build_phase()
@@ -17,3 +18,4 @@ class BaseTest(uvm_test):
         self.raise_objection()
         await self.seq.start()
         self.drop_objection()
+

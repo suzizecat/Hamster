@@ -15,6 +15,7 @@ interface hamster_regbank_out_if;
   logic [15: 0] RADIO3DEAD_VAL      ;
   logic [15: 0] RADIO4DEAD_VAL      ;
   logic [15: 0] RADIOSKIP_VAL       ;
+  logic [15: 0] RADIOPWRDIV_DIV     ;
   logic [ 2: 0] MOT1CR_I_STEP       ;
   logic         MOT1CR_ENC_POL      ;
   logic         MOT1CR_I_EN         ;
@@ -28,6 +29,11 @@ interface hamster_regbank_out_if;
   logic         MOT2CR_PWR_ALL      ;
   logic [ 9: 0] MOT2PWM_MAX         ;
   logic [14: 0] SPDLOW_SPDLOWTHR    ;
+  logic         POWERCTRL1_STOPEN   ;
+  logic         POWERCTRL1_CTRLEN   ;
+  logic [ 7: 0] POWERCTRL1_HSTHR    ;
+  logic [ 7: 0] POWERTHR_LTHR       ;
+  logic [ 7: 0] POWERTHR_HTHR       ;
 
   modport slave (
     input  RADIOCFGR_DIR_CHAN  ,
@@ -43,6 +49,7 @@ interface hamster_regbank_out_if;
     input  RADIO3DEAD_VAL      ,
     input  RADIO4DEAD_VAL      ,
     input  RADIOSKIP_VAL       ,
+    input  RADIOPWRDIV_DIV     ,
     input  MOT1CR_I_STEP       ,
     input  MOT1CR_ENC_POL      ,
     input  MOT1CR_I_EN         ,
@@ -55,7 +62,12 @@ interface hamster_regbank_out_if;
     input  MOT2CR_PWR_MSB      ,
     input  MOT2CR_PWR_ALL      ,
     input  MOT2PWM_MAX         ,
-    input  SPDLOW_SPDLOWTHR    
+    input  SPDLOW_SPDLOWTHR    ,
+    input  POWERCTRL1_STOPEN   ,
+    input  POWERCTRL1_CTRLEN   ,
+    input  POWERCTRL1_HSTHR    ,
+    input  POWERTHR_LTHR       ,
+    input  POWERTHR_HTHR       
   );
 
   modport master (
@@ -72,6 +84,7 @@ interface hamster_regbank_out_if;
     output RADIO3DEAD_VAL      ,
     output RADIO4DEAD_VAL      ,
     output RADIOSKIP_VAL       ,
+    output RADIOPWRDIV_DIV     ,
     output MOT1CR_I_STEP       ,
     output MOT1CR_ENC_POL      ,
     output MOT1CR_I_EN         ,
@@ -84,6 +97,11 @@ interface hamster_regbank_out_if;
     output MOT2CR_PWR_MSB      ,
     output MOT2CR_PWR_ALL      ,
     output MOT2PWM_MAX         ,
-    output SPDLOW_SPDLOWTHR    
+    output SPDLOW_SPDLOWTHR    ,
+    output POWERCTRL1_STOPEN   ,
+    output POWERCTRL1_CTRLEN   ,
+    output POWERCTRL1_HSTHR    ,
+    output POWERTHR_LTHR       ,
+    output POWERTHR_HTHR       
   );
 endinterface : hamster_regbank_out_if
