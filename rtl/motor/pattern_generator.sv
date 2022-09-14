@@ -43,36 +43,53 @@ module pattern_generator #(parameter int K_NSUBSTEPS = 10) (
 		(     substep_increment && 32'(abi_step_cnt) == (K_NSUBSTEPS-1))
 		|| (~ substep_increment && abi_step_cnt == 0);
 
+		
+	logic [7:0][5:0]  step_next_lut;
+	assign step_next_lut = {
+	//  { +1 , -1 }  // Step
+		{3'd3,3'd1}, // 7
+		{3'd1,3'd5}, // 6
+		{3'd0,3'd4}, // 5 -- loop
+		{3'd5,3'd3}, // 4
+		{3'd4,3'd2}, // 3
+		{3'd3,3'd1}, // 2
+		{3'd2,3'd0}, // 1
+		{3'd1,3'd5}  // 0
+	};
 
+	assign {step_p1,step_m1} = step_next_lut[step];
+	assign step_sel = i_step_reverse ? step_m1 : step_p1;
+	
+	// always_comb
+	// 	begin : p_comb_step
+	// 		case (step)
+	// 			inside
+	// 				0,6 :
+	// 					begin
+	// 						step_p1 = 1;
+	// 						step_m1 = 5;
+	// 					end
+	// 			[1:4] :
+	// 				begin
+	// 					step_p1 = step + 1;
+	// 					step_m1 = step - 1;
+	// 				end
+	// 			5 :
+	// 				begin
+	// 					step_p1 = 0;
+	// 					step_m1 = 4;
+	// 				end
+	// 			7 :
+	// 				begin
+	// 					step_p1 = 1;
+	// 					step_m1 = 0;
+	// 				end
+	// 			// Default not needed, as all case covered.
+	// 		endcase
+			
+	// 	end
 
-	always_comb
-		begin : p_comb_step
-			case (step)
-				inside
-					0,6 :
-						begin
-							step_p1 = 1;
-							step_m1 = 5;
-						end
-				[1:4] :
-					begin
-						step_p1 = step + 1;
-						step_m1 = step - 1;
-					end
-				5 :
-					begin
-						step_p1 = 0;
-						step_m1 = 4;
-					end
-				7 :
-					begin
-						step_p1 = 1;
-						step_m1 = 0;
-					end
-				// Default not needed, as all case covered.
-			endcase
-			step_sel = i_step_reverse ? step_m1 : step_p1;
-		end
+	
 
 	logic [5:0] selected_output;
 	logic [5:0] power_mask     ;
