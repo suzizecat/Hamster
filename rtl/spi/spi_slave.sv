@@ -1,4 +1,4 @@
-module spi_slave #(parameter  K_DWIDTH = 16) (
+module spi_slave #(parameter int K_DWIDTH = 16) (
 	input  logic                i_clk          , //! System clock
 	input  logic                i_rst_n        , //! System reset
 	// Top level signals
@@ -11,6 +11,11 @@ module spi_slave #(parameter  K_DWIDTH = 16) (
 	// Parameters
 	input  logic                i_cpol         , //! Clock polarity
 	input  logic                i_cpha         , //! Clock phase
+	//debug
+	output logic [ K_CNT_WIDTH-1:0] o_dbg_mosi_cnt  ,
+	output logic [ K_CNT_WIDTH-1:0] o_dbg_miso_cnt  ,
+	output logic dgb_clk_rise,
+	output logic dbg_clk_fall,
 	// SPI signals
 	input  logic                i_mosi         , //! SPI slave data input
 	input  logic                i_spi_clk      , //! SPI clock
@@ -18,90 +23,166 @@ module spi_slave #(parameter  K_DWIDTH = 16) (
 	output logic                o_miso           //! SPI Slave out
 );
 
-	logic trigger_capture     ;
-	logic trigger_send        ;
-	logic spi_clk_rising_edge ;
-	logic spi_clk_falling_edge;
+	localparam int K_CNT_WIDTH  = $clog2(K_DWIDTH);
+	localparam int K_BUFF_WIDTH = (2**K_CNT_WIDTH);
 
-	logic start_sequence  ;
-	logic previous_spi_clk;
-	logic previous_csn    ;
+	logic prev_csn    ;
+	logic prev_spi_clk;
 
-	logic [K_DWIDTH-1:0] mosi_buffer;
-	logic [K_DWIDTH-2:0] miso_buffer;
+	logic trig_capture       ;
+	logic trig_send          ;
+	logic trig_decrement_cnt_mosi ;
+	logic trig_decrement_cnt_miso ;
+	logic trig_handle_buffers;
 
-	logic [$clog2(K_DWIDTH):0] input_counter;
 
-	logic trigger_new_sequence   ;
-	logic transmit_data_to_system;
+	logic clk_rising_edge ;
+	logic clk_falling_edge;
 
-	//! Various edge detections
+	logic [ K_CNT_WIDTH-1:0] mosi_cnt  ;
+	logic [ K_CNT_WIDTH-1:0] miso_cnt  ;
+	logic [K_BUFF_WIDTH-1:0] miso_buff;
+	logic [K_BUFF_WIDTH-1:0] mosi_buff;
 
-	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_edge_detection
+
+	assign o_selected = ~prev_csn & ~i_cs_n;
+
+	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_edges
 		if (~ i_rst_n ) begin
-			spi_clk_rising_edge  <= 0;
-			spi_clk_falling_edge <= 0;
-			previous_spi_clk     <= 0;
-			previous_csn         <= 0;
+			prev_csn         <= 0;
+			prev_spi_clk     <= 0;
+			clk_rising_edge  <= 0;
+			clk_falling_edge <= 0;
 		end else begin
-			previous_spi_clk     <= i_spi_clk;
-			spi_clk_rising_edge  <= ~previous_spi_clk & i_spi_clk;
-			spi_clk_falling_edge <= previous_spi_clk & ~i_spi_clk;
-			previous_csn         <= i_cs_n;
-			start_sequence       <= ~i_cs_n & previous_csn | trigger_new_sequence;
+			prev_csn     <= i_cs_n;
+			prev_spi_clk <= i_spi_clk;
+
+			if (~i_cs_n) begin
+				clk_rising_edge  <= ~ prev_spi_clk & i_spi_clk;
+				clk_falling_edge <= prev_spi_clk & ~ i_spi_clk;
+			end else begin
+				clk_rising_edge  <= 0;
+				clk_falling_edge <= 0;
+			end
 		end
 	end
 
-	assign trigger_capture = ((i_cpha == i_cpol) ? spi_clk_rising_edge : spi_clk_falling_edge) & ~i_cs_n;
-	assign trigger_send    = ((i_cpha == i_cpol) ? spi_clk_falling_edge : spi_clk_rising_edge) & ~i_cs_n;
+	always_comb begin : p_comb_assign_triggers
+		case ({i_cpol,i_cpha})
+			2'b00   : {trig_capture, trig_send} = {clk_rising_edge, clk_falling_edge};
+			2'b01   : {trig_capture, trig_send} = {clk_falling_edge, clk_rising_edge};
+			2'b10   : {trig_capture, trig_send} = {clk_falling_edge, clk_rising_edge};
+			2'b11   : {trig_capture, trig_send} = {clk_rising_edge, clk_falling_edge};
+			default :
+				{trig_capture, trig_send} = 2'b00;
+		endcase
+	end
 
-	//! Buffering
-	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_buffering
+	assign trig_decrement_cnt_mosi  = (i_cpha == 1'b1) ? trig_capture : trig_send;
+	assign trig_decrement_cnt_miso  = (i_cpha == 1'b1) ? trig_send : trig_capture;
+	assign trig_handle_buffers = (! i_cs_n && trig_decrement_cnt_mosi == 1'b1 && mosi_cnt == 0);
+
+	assign o_dbg_mosi_cnt = mosi_cnt;
+	assign o_dbg_miso_cnt = miso_cnt;
+
+	assign dgb_clk_rise = clk_rising_edge;
+	assign dbg_clk_fall = clk_falling_edge;
+
+	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_cnt_mosi
 		if (~ i_rst_n ) begin
-			input_counter           <= 0;
-			mosi_buffer             <= 0;
-			miso_buffer             <= 0;
-			trigger_new_sequence    <= 0;
-			o_rx_event              <= 0;
-			o_data_recieved         <= 0;
-			o_selected              <= 0;
-			o_txe                   <= 1;
-			transmit_data_to_system <= 0;
+			mosi_cnt <= K_CNT_WIDTH'(K_DWIDTH - 1);			
 		end else begin
-			trigger_new_sequence <= 0;
-			o_rx_event           <= 0;
-			o_selected           <= ~ i_cs_n ;
-			transmit_data_to_system <= 0;
-			if(start_sequence) begin
-				mosi_buffer   <= 0;
-				input_counter <= K_DWIDTH-1;
-			end
-			if(~i_cs_n) begin
-				if(trigger_capture) begin
-					input_counter <= input_counter -1;
-					mosi_buffer   <= {mosi_buffer[K_DWIDTH-2:0],i_mosi};
-					if(input_counter == 0) begin
-						transmit_data_to_system <= 1;
-						trigger_new_sequence <= 1;
+			if (i_cs_n) begin
+				mosi_cnt <= K_CNT_WIDTH'(K_DWIDTH - 1);
+			end else begin
+				if (trig_decrement_cnt_mosi) begin
+					if(mosi_cnt == 0) begin
+
+						mosi_cnt <= K_CNT_WIDTH'(K_DWIDTH - 1);
+					end else begin
+						mosi_cnt <= mosi_cnt - 1;
 					end
 				end
-				if (transmit_data_to_system) begin
-					o_data_recieved      <= mosi_buffer;
-					o_rx_event           <= 1;
-					o_txe                <= 1;
-				end
-				if(trigger_send) begin
-					{o_miso,miso_buffer} <= {miso_buffer,1'b0};
-				end
-			end else if (o_selected & i_cs_n) begin
-				// On CSN falling edge, flush output 
-				o_miso <= 0;
-				miso_buffer <= 0;
 			end
+		end
+	end
 
-			if(i_valid_data) begin
-				{o_miso,miso_buffer} <= i_data_to_send;
-				o_txe <= 0;
+	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_cnt_miso
+		if (~ i_rst_n ) begin
+			miso_cnt <= K_CNT_WIDTH'(K_DWIDTH - 1);			
+		end else begin
+			if (i_cs_n) begin
+				miso_cnt <= K_CNT_WIDTH'(K_DWIDTH - 1);
+			end else begin
+				if (trig_decrement_cnt_miso) begin
+					if(miso_cnt == 0) begin
+						miso_cnt <= K_CNT_WIDTH'(K_DWIDTH - 1);
+					end else begin
+						miso_cnt <= miso_cnt - 1;
+					end
+				end
+			end
+		end
+	end
+
+	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_load_mosi
+		if (~ i_rst_n ) begin
+			mosi_buff <= 0;
+		end else begin
+			if (trig_capture) begin
+				mosi_buff[mosi_cnt] <= i_mosi;
+			end
+		end
+	end
+
+	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_send_miso
+		if (~ i_rst_n ) begin
+			o_miso <= 0;
+		end else begin
+			if (i_valid_data & ~ i_cs_n) begin
+				o_miso <= i_data_to_send[miso_cnt];
+			end else if(trig_send) begin
+				o_miso <= miso_buff[miso_cnt];
+			end
+		end
+	end
+
+	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_handle_buffs
+		if (~ i_rst_n ) begin
+			miso_buff       <= 0;
+			o_data_recieved <= 0;
+
+			o_txe           <= 1;
+		end else begin
+			if (~i_cs_n) begin
+				if (i_valid_data) begin
+					miso_buff    <= i_data_to_send;
+					o_txe        <= 0;
+				end else if(trig_handle_buffers) begin
+					miso_buff       <= 0;
+					o_data_recieved <= mosi_buff;
+					o_txe           <= 1;
+				end
+			end else begin
+				miso_buff       <= 0;
+				o_data_recieved <= 0;
+				o_txe           <= 1;
+			end
+		end
+	end
+
+	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_signaling
+		if (~ i_rst_n ) begin
+			o_txe <= 1;
+		end else begin
+			if (~i_cs_n) begin
+				if(trig_handle_buffers) begin
+					o_rx_event <= 1;
+				end else begin
+					o_rx_event <= 0;
+				end
+			end else begin
+				o_rx_event <= 0;
 			end
 		end
 	end
