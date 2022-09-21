@@ -86,10 +86,16 @@ module spi_rb_interface (
 
 			mif_rd_rb.read <= 0;
 			o_spi_valid_tx <= 0;
+
+			mif_wr_rb.write <= 0;
+			mif_wr_rb.data <= 0;
 		end else begin
 
 			o_spi_valid_tx <= 0;
 			mif_rd_rb.read <= 0;
+
+			mif_wr_rb.write <= 0;
+			mif_wr_rb.data <= 0;
 
 			if (i_csn) begin
 				state_spi <= IDLE;
