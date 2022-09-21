@@ -49,11 +49,12 @@ class HamsterSPIInterface:
         csv = CSVReader()
         csv.read_csv("/home/julien/Projets/HDL/Hamster/rtl/regbank/definition/hamster_regbank.csv")
         self.rb = csv.current_rb
+        self.rb.reset()
     
 
     def _setup_spi(self) :
         spi_mode = 0
-        self.spi_drv = SPIDriver(SerialMode.MASTER,self._itf,(10,"ns"))
+        self.spi_drv = SPIDriver(SerialMode.MASTER,self._itf,(20,"ns"))
         self.spi_drv.csn_pulse_per_word = False
         self.spi_drv.spi_mode = spi_mode
         
@@ -117,11 +118,12 @@ class HamsterSPIInterface:
 
 
     def store_sof_write(self,address) :
-        log.info(f"Start WRITE frame at {address:02X}")
+        log.info(f"Start WRITE frame at 0x{address:02X} ({self.rb[address].name if address in self.rb else 'Unbound'})")
         self.spi_drv.to_send.put_nowait(DataWord(0x02 << 8 | (address & 0xFF)))
 
     def store_sof_read(self,address) :
-        log.info(f"Start READ  frame at {address:02X}")
+
+        log.info(f"Start READ  frame at 0x{address:02X} ({self.rb[address].name if address in self.rb else 'Unbound'})")
         self.spi_drv.to_send.put_nowait(DataWord(0x01 << 8 | (address & 0xFF)))
 
     def add_data_to_send(self,value) :
@@ -140,7 +142,7 @@ class HamsterSPIInterface:
             else: 
                 log.error(f"Invalid request payload type for exchange :{type(req.target)!s}")
                 continue
-
+            self.rb[rb_target.name].write_value(req.value)
             if previous_reg is None or previous_reg.offset != current_reg.offset -1 :
                 await self.spi_drv.drive_csn(1,(1,"us"))
                 await self.spi_idle()
@@ -156,16 +158,22 @@ class HamsterSPIInterface:
         await self.spi_drv.drive_csn(1,(10,"ns"))
         await self.spi_drv.is_idle.wait()
 
-    async def read(self, reg) :
+    async def read(self, reg, assert_coherency = True) :
         log.info(f"Read register {reg}")
         reg = self.rb.get_register(reg)
+        if reg is None :
+            cocotb.log.warning(f"Tentative of unbound access through '{reg!r}'")
+            return
         await self.spi_idle()
         await self.spi_drv.drive_csn(1,(1,"us"))
         self.store_sof_read(reg.offset)
         self.add_data_to_send(0)
         await self.spi_drv.evt.word_done.wait()
         await self.spi_idle()
-        self.rb[reg.name].value = int(self.last_read_value)
+        
+        if self.rb[reg.name].value != int(self.last_read_value) :
+            cocotb.log.warning(f"Mismatch in register bank value for {reg.name}: expected 0x{self.rb[reg.name].value:04X} got 0x{int(self.last_read_value):04X}")
+            assert not assert_coherency , f"Mismatch in register bank value on asserted READ" 
         return self.last_read_value
 
 

@@ -8,7 +8,7 @@ from vipy.bus.spi import *
 
 from vipy.externals.encoders import *
 
-from models import HamsterSPIInterface
+from vmodels import HamsterSPIInterface
 
 DataWord.word_size = 16
 
@@ -68,8 +68,7 @@ async def new_spi(dut):
     await Timer(100,"ns")
     cocotb.log.info("Reset released")
 
-    comptest = await hamster.read("COMPTEST")
-    assert int(comptest) == 0xCAFE, f"Invalid COMPTEST value {comptest}"
+    comptest = await hamster.read("COMPTEST",False)
 
     await Timer(1,"us")
     cocotb.log.info(f"Write START")
@@ -83,13 +82,9 @@ async def new_spi(dut):
     cocotb.log.info(f"Write done")
     await Timer(1,"us")
 
-    radiopol = await hamster.read("RADIOPOL")
-    radiocfgr = await hamster.read("RADIOCFGR")
-    radio1dead = await hamster.read("RADIO1DEAD")
-
-    assert int(radiopol)   == hamster.rb["RADIOPOL"].value
-    assert int(radiocfgr)  == hamster.rb["RADIOCFGR"].value
-    assert int(radio1dead) == hamster.rb["RADIO1DEAD"].value
+    radiopol = await hamster.read("RADIOPOL",False)
+    radiocfgr = await hamster.read("RADIOCFGR",False)
+    radio1dead = await hamster.read("RADIO1DEAD",False)
 
 
     return

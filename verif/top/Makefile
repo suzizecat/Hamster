@@ -29,8 +29,10 @@ else
 $(info "Mode is gate")
 SRC_PATH := $(PRJ_PATH)/phy/build/core_top/job0
 COMPILE_ARGS += -Wno-WIDTH
+COMPILE_ARGS += -Wno-PINMISSING
 VERILOG_SOURCES += /home/julien/Projets/C++/Libety/sky130_fd_sc_hd__tt_025C_1v80.v
 VERILOG_SOURCES += $(SRC_PATH)/syn/0/outputs/core_top.vg
+
 endif
 
 
