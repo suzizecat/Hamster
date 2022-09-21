@@ -43,6 +43,14 @@ def main():
     chip.set('asic', 'corearea', [(10,10),(2910,3510)])
 
     chip.load_target('skywater130_demo')          # load predefined target
+
+    flow = "syndbg_flow"
+    chip.node(flow,"import","surelog")
+    chip.node(flow,"convert","sv2v")
+    chip.node(flow,"syn","yosys")
+    chip.edge(flow,"import","convert")
+    chip.edge(flow,"convert","syn")
+    chip.set("option","flow",flow)
     #chip.target('asicflow_csky130hd')           # load predefined target
     #chip.target('asicflow_idealcsky130hd')           # load predefined target
     #chip.target('asicflow_freepdk45')           # load predefined target
