@@ -1,3 +1,5 @@
+`include "debug.svh"
+
 module core_top (
 	input  logic       i_clk     , //! Main clock
 	input  logic       i_rst_n   , //! Main reset
@@ -17,7 +19,13 @@ module core_top (
 	input  logic       i_cs_n    , //!
 	input  logic       i_mosi    , //!
 	input  logic       i_spi_clk , //!
-	output logic       o_miso      //!
+	output logic       o_miso    ,  //!
+	// Debug outputs
+	output spi_events_t dbg_spi,
+	output logic  o_rb_read_valid, //! 
+	output logic  o_rb_read_req, //! 
+	output logic  o_rb_write_req //! 
+	
 );
 
 	localparam int PWM_RES    = 8 ;
@@ -64,6 +72,12 @@ module core_top (
 
 	logic time_speed;
 
+	assign dbg_spi.selected = spi_selected;
+	assign dbg_spi.rx_evt = spi_rxne;
+	assign dbg_spi.txe = spi_txe;
+	assign dbg_spi.rx_data = spi_mosi_data;
+
+
 	assign radio_deadzones = {
 		PWM_RES'(regbank_out.RADIO1DEAD_VAL),
 		PWM_RES'(regbank_out.RADIO2DEAD_VAL),
@@ -99,7 +113,11 @@ module core_top (
 		.i_mosi         (i_mosi        ),
 		.i_spi_clk      (i_spi_clk     ),
 		.i_cs_n         (i_cs_n        ),
-		.o_miso         (o_miso        )
+		.o_miso         (o_miso        ),
+		.o_dbg_mosi_cnt(dbg_spi.tx_cnt),
+		.o_dbg_miso_cnt(dbg_spi.rx_cnt),
+		.dgb_clk_rise(dbg_spi.clk_r),
+		.dbg_clk_fall(dbg_spi.clk_f)
 	);
 
 	spi_rb_interface u_spi_rb_interface (
@@ -114,6 +132,10 @@ module core_top (
 		.i_csn         (~spi_selected ),
 		.o_spi_valid_tx(spi_miso_valid)
 	);
+
+	assign o_rb_write_req = spi_rb_wr.write;
+	assign o_rb_read_valid = spi_rb_rd.valid;
+	assign o_rb_read_req = spi_rb_rd.read;
 
 	assign regbank_in.COMPID_COMP_ID     = 16'hA001;
 	assign regbank_in.COMPTEST_COMP_TEST = 16'hCAFE;
