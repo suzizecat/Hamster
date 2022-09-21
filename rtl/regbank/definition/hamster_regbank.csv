@@ -37,7 +37,7 @@
  ,                     ,               ,                     ,      ,           ,       ,
  ,MOT2PWM              ,0x23           ,0x100                ,9:0   ,MAX        ,RW     ,Motor2 PWM
  ,                     ,               ,                     ,      ,           ,       ,
- ,SPDLOW               ,0x30           ,2640                 ,14:0  ,SPDLOWTHR  ,       ,Low speed threshold to use direct drive method
+ ,SPDLOW               ,0x30           ,2640                 ,14:0  ,SPDLOWTHR  ,RW     ,Low speed threshold to use direct drive method
  ,POWERCTRL1           ,0x40           ,0x0000               ,      ,           ,       ,
  ,                     ,               ,                     ,0     ,STOPEN     ,RW     ,Low voltage hard stop enable
  ,                     ,               ,                     ,1     ,CTRLEN     ,RW     ,Low voltage power control enable

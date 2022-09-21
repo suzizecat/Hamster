@@ -1,0 +1,1 @@
+from .spi_reg import HamsterSPIInterface

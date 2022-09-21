@@ -131,8 +131,8 @@ module core_top (
 	timebase #(.K_RES(14)) u_speed_timebase (
 		.i_clk  (i_clk     ),
 		.i_rst_n(i_rst_n   ),
-		.i_stop ('b0       ),
-		.i_thr  ('d10000   ),
+		.i_stop (1'b0       ),
+		.i_thr  (14'd10000   ),
 		.o_tick (time_speed)
 	);
 

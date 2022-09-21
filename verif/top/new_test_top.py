@@ -1,13 +1,14 @@
-import random
 import cocotb
-from cocotb.clock import Clock
-from cocotb.handle import HierarchyObject, ModifiableObject
-from cocotb.triggers import ClockCycles, FallingEdge, Join, RisingEdge, Timer
+from cocotb.clock import *
+from cocotb.handle import *
+from cocotb.triggers import *
 
 from vipy.bus.base import *
 from vipy.bus.spi import *
 
 from vipy.externals.encoders import *
+
+from models import HamsterSPIInterface
 
 DataWord.word_size = 16
 
@@ -28,13 +29,71 @@ async def full_reset(dut):
     dut.i_spi_clk.value = 0 
 
 def spi_read(address):
+    cocotb.log.info(f"SPI Read  address {address:02X}")
     return DataWord(0x01 << 8 | (address & 0xFF))
 
 def spi_write(address):
+    cocotb.log.info(f"SPI Write address {address:02X}")
     return DataWord(0x02 << 8 | (address & 0xFF))
 
 def spi_nop():
     return DataWord(0)
+
+
+@cocotb.test()
+async def new_spi(dut):
+    await full_reset(dut)
+    #itf = EncoderABI.ABIInterface(a=dut.i_enc1_a,b=dut.i_enc1_b,i=dut.i_enc1_i)
+    # encoder = EncoderABI(300,itf=itf)
+    # encoder.speed_tr_per_sec = 100000
+    # await encoder.start()
+
+    spi_itf = SPIInterface(
+        mosi=dut.i_mosi,
+        miso=dut.o_miso,
+        clk=dut.i_spi_clk,
+        csn=dut.i_cs_n
+    )
+
+
+
+    hamster = HamsterSPIInterface(spi_itf)
+    cocotb.log.info("Hamster setup")
+
+    clk = await cocotb.start(Clock(dut.i_clk,1,"ns").start())
+    cocotb.log.info("Clock enabled")
+
+    await Timer(100,"ns")
+    dut.i_rst_n.value = 1
+    await Timer(100,"ns")
+    cocotb.log.info("Reset released")
+
+    comptest = await hamster.read("COMPTEST")
+    assert int(comptest) == 0xCAFE, f"Invalid COMPTEST value {comptest}"
+
+    await Timer(1,"us")
+    cocotb.log.info(f"Write START")
+    hamster.store_write("RADIOPOL.DIR_POL",1)
+    hamster.store_write("RADIOPOL.OTHER_POL",1)
+    hamster.store_write("RADIOCFGR.OTHER_CHAN",1)
+    hamster.store_write("RADIO1DEAD",0xBEEF)
+    hamster.compress_write()
+    await hamster.send_write()
+
+    cocotb.log.info(f"Write done")
+    await Timer(1,"us")
+
+    radiopol = await hamster.read("RADIOPOL")
+    radiocfgr = await hamster.read("RADIOCFGR")
+    radio1dead = await hamster.read("RADIO1DEAD")
+
+    assert int(radiopol)   == hamster.rb["RADIOPOL"].value
+    assert int(radiocfgr)  == hamster.rb["RADIOCFGR"].value
+    assert int(radio1dead) == hamster.rb["RADIO1DEAD"].value
+
+
+    return
+
 
 @cocotb.test()
 async def read_spi(dut):

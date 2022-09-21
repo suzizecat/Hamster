@@ -1,7 +1,7 @@
 .vscode/
 .env
 *.log
-sim_build/
+sim_build*/
 __pycache__
 *.fst
 *.vcd
