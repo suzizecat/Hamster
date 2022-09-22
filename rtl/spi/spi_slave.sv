@@ -12,8 +12,8 @@ module spi_slave #(parameter int K_DWIDTH = 16) (
 	input  logic                i_cpol         , //! Clock polarity
 	input  logic                i_cpha         , //! Clock phase
 	//debug
-	output logic [ K_CNT_WIDTH-1:0] o_dbg_mosi_cnt  ,
-	output logic [ K_CNT_WIDTH-1:0] o_dbg_miso_cnt  ,
+	output logic [ $clog2(K_DWIDTH)-1:0] o_dbg_mosi_cnt  ,
+	output logic [ $clog2(K_DWIDTH)-1:0] o_dbg_miso_cnt  ,
 	output logic dgb_clk_rise,
 	output logic dbg_clk_fall,
 	// SPI signals
@@ -173,7 +173,7 @@ module spi_slave #(parameter int K_DWIDTH = 16) (
 
 	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_signaling
 		if (~ i_rst_n ) begin
-			o_txe <= 1;
+			o_rx_event <= 1;
 		end else begin
 			if (~i_cs_n) begin
 				if(trig_handle_buffers) begin

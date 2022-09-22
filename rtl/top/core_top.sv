@@ -185,6 +185,7 @@ module core_top (
 		.FBITS(0      )
 	) u_div_power (
 		.i_clk  (i_clk                                   ),
+		.i_rst_n(i_rst_n                                 ),
 		.i_start(cmd_power_done                          ),
 		.o_busy (                                        ),
 		.o_valid(                                        ),

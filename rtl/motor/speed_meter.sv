@@ -29,12 +29,13 @@ module speed_meter #(parameter int K_WIDTH = 32) (
 			if (i_force_reset | force_reset_prev) begin
 				cnt              <= 0;
 				o_speed          <= 0;
-				force_reset_prev <= 1;
 
-				req_unlock <= (req_unlock | i_unlock) & ~i_force_reset ;
 				if (i_time_trigger & (i_unlock | req_unlock)) begin
 					force_reset_prev <= 0; // Unlock the counter
 					req_unlock       <= 0;
+				end else begin
+					req_unlock <= (req_unlock | i_unlock) & ~i_force_reset ;	
+					force_reset_prev <= 1;
 				end
 			end else begin
 				if (i_time_trigger) begin

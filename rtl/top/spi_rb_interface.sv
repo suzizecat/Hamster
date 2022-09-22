@@ -89,6 +89,7 @@ module spi_rb_interface (
 
 			mif_wr_rb.write <= 0;
 			mif_wr_rb.data <= 0;
+			o_spi_out_data <= 0;
 		end else begin
 
 			o_spi_valid_tx <= 0;
@@ -118,7 +119,7 @@ module spi_rb_interface (
 						address <= part_address;
 						mif_rd_rb.read <= 1;
 					end
-				end
+				end 
 				if (state_spi == WRITING) begin
 					if(mif_rd_rb.valid) begin
 						o_spi_out_data <= mif_rd_rb.data;

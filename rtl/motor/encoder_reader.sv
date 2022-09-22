@@ -49,8 +49,7 @@ module encoder_reader (
 				o_step       <= 1;
 				o_polarity   <= i_polarity;
 				o_dir_change <= o_polarity ^ (i_polarity);
-			end
-			if (current_ab == expected_ab_neg) begin
+			end else if (current_ab == expected_ab_neg) begin
 				o_step       <= 1;
 				o_polarity   <= ~i_polarity;
 				o_dir_change <= o_polarity ^ (~i_polarity);

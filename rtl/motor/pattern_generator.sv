@@ -37,6 +37,10 @@ module pattern_generator #(parameter int K_NSUBSTEPS = 10) (
 	logic substep_increment   ;
 	logic control_step_trigger;
 
+	logic [5:0] selected_output;
+	logic [5:0] power_mask     ;
+	logic power_on;
+
 	assign substep_increment    = ~step[0] ^ i_step_polarity_rev;
 	assign abi_step_cnt_next    = substep_increment ? (abi_step_cnt +1) : (abi_step_cnt -1);
 	assign control_step_trigger = i_step_trigger &
@@ -90,12 +94,11 @@ module pattern_generator #(parameter int K_NSUBSTEPS = 10) (
 	// 	end
 
 	
-
-	logic [5:0] selected_output;
-	logic [5:0] power_mask     ;
-
 	assign selected_output = step_lut[step_sel];
 	assign power_mask      = {{3{power_on | i_cmd_on_lsb}},{3{power_on | ~i_cmd_on_lsb}}};
+
+	
+	assign power_on = i_bypass_power | (i_power > (i_cmd_on_lsb ? (K_NSUBSTEPS[$clog2(K_NSUBSTEPS)-1:0] -1 - abi_step_cnt ) : abi_step_cnt));
 
 	always_ff @(posedge i_clk or negedge i_rst_n)
 		begin : p_seq_substep_counter
@@ -130,7 +133,5 @@ module pattern_generator #(parameter int K_NSUBSTEPS = 10) (
 				end
 		end
 
-	logic power_on;
-	assign power_on = i_bypass_power | (i_power > (i_cmd_on_lsb ? (K_NSUBSTEPS[$clog2(K_NSUBSTEPS)-1:0] -1 - abi_step_cnt ) : abi_step_cnt));
 
 endmodule
