@@ -34,7 +34,8 @@ module spi_slave #(parameter int K_DWIDTH = 16) (
 	logic trig_decrement_cnt_mosi ;
 	logic trig_decrement_cnt_miso ;
 	logic trig_handle_buffers;
-
+	
+	logic lock;
 
 	logic clk_rising_edge ;
 	logic clk_falling_edge;
@@ -128,9 +129,17 @@ module spi_slave #(parameter int K_DWIDTH = 16) (
 	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_load_mosi
 		if (~ i_rst_n ) begin
 			mosi_buff <= 0;
+			o_rx_event <= 0;
+			o_data_recieved <= 0;
 		end else begin
+			o_rx_event <= 0; 
 			if (trig_capture) begin
 				mosi_buff[mosi_cnt] <= i_mosi;
+				if(mosi_cnt == 0) begin
+					o_rx_event <= mosi_cnt == 0;
+					o_data_recieved <= {mosi_buff[K_DWIDTH-1:1],i_mosi};
+					
+				end
 			end
 		end
 	end
@@ -150,39 +159,22 @@ module spi_slave #(parameter int K_DWIDTH = 16) (
 	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_handle_buffs
 		if (~ i_rst_n ) begin
 			miso_buff       <= 0;
-			o_data_recieved <= 0;
-
 			o_txe           <= 1;
+			lock <= 0;
 		end else begin
 			if (~i_cs_n) begin
+				lock <= (lock & (|miso_cnt)) | i_valid_data;
 				if (i_valid_data) begin
 					miso_buff    <= i_data_to_send;
 					o_txe        <= 0;
-				end else if(trig_handle_buffers) begin
+				end else if(trig_handle_buffers & ~lock) begin
 					miso_buff       <= 0;
-					o_data_recieved <= mosi_buff;
 					o_txe           <= 1;
 				end
 			end else begin
 				miso_buff       <= 0;
-				o_data_recieved <= 0;
 				o_txe           <= 1;
-			end
-		end
-	end
-
-	always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_signaling
-		if (~ i_rst_n ) begin
-			o_rx_event <= 1;
-		end else begin
-			if (~i_cs_n) begin
-				if(trig_handle_buffers) begin
-					o_rx_event <= 1;
-				end else begin
-					o_rx_event <= 0;
-				end
-			end else begin
-				o_rx_event <= 0;
+				lock <= 0;
 			end
 		end
 	end
