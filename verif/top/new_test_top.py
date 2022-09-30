@@ -46,7 +46,7 @@ from vipy.structure.globalenv import VipyLogAdapter
 
 @cocotb.test()
 async def new_struct(dut) :
-    tb = Hamster(dut) if GlobalEnv().top is None else GlobalEnv().top
+    tb = GlobalEnv().get_top(Hamster,dut)
 
     tb.build()
 
