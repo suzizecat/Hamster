@@ -12,7 +12,6 @@ from vipy.structure import *
 from vipy.regbank.reader import CSVReader
 from vipy.regbank.structure import *
 
-import logging
 
 class WriteRequest:
     def __init__(self,target,value) -> None:
@@ -58,7 +57,7 @@ class HamsterSPIInterface(GenericDriver):
 
     def _load_rb(self) :
         csv = CSVReader()
-        csv.read_csv("/home/julien/Projets/HDL/Hamster/rtl/regbank/definition/hamster_regbank.csv")
+        csv.read_csv("../../rtl/regbank/definition/hamster_regbank.csv")
         self.rb = csv.current_rb
     
     def _setup_spi(self) :        

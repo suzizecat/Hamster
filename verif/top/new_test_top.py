@@ -43,7 +43,6 @@ def spi_nop():
 
 
 from vipy.structure.globalenv import VipyLogAdapter
-VipyLogAdapter.DEFAULT = VipyLogAdapter.HIGH
 
 @cocotb.test()
 async def new_struct(dut) :
