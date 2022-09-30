@@ -8,7 +8,9 @@ from vipy.bus.spi import *
 
 from vipy.externals.encoders import *
 
-from vmodels import HamsterSPIInterface
+from vipy.structure import GlobalEnv
+
+from vmodels import HamsterSPIInterface,Hamster
 
 DataWord.word_size = 16
 
@@ -38,6 +40,38 @@ def spi_write(address):
 
 def spi_nop():
     return DataWord(0)
+
+
+from vipy.structure.globalenv import VipyLogAdapter
+VipyLogAdapter.DEFAULT = VipyLogAdapter.HIGH
+
+@cocotb.test()
+async def new_struct(dut) :
+    tb = Hamster(dut) if GlobalEnv().top is None else GlobalEnv().top
+
+    tb.build()
+
+    await tb.init()
+
+    comptest = await tb.spi.read("COMPTEST",False)
+
+    await Timer(1,"us")
+    cocotb.log.info(f"Write START")
+    tb.spi.store_write("RADIOPOL.DIR_POL",1)
+    tb.spi.store_write("RADIOPOL.OTHER_POL",1)
+    tb.spi.store_write("RADIOCFGR.OTHER_CHAN",1)
+    tb.spi.store_write("RADIO1DEAD",0xBEEF)
+    tb.spi.compress_write()
+    await tb.spi.send_write()
+
+    cocotb.log.info(f"Write done")
+    await Timer(1,"us")
+
+    radiopol = await tb.spi.read("RADIOPOL",False)
+    radiocfgr = await tb.spi.read("RADIOCFGR",False)
+    radio1dead = await tb.spi.read("RADIO1DEAD",False)
+
+
 
 
 @cocotb.test()
