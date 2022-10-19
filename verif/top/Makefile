@@ -5,6 +5,8 @@ TOPLEVEL_LANG ?= verilog
 MODE ?= behav
 
 SIM_BUILD ?= sim_build_$(MODE)
+MAKEFLAGS := --jobs=$(shell nproc)
+
 
 
 ifeq ($(MODE), behav)
@@ -23,6 +25,7 @@ VERILOG_SOURCES += $(SRC_PATH)/maths/div.sv
 VERILOG_SOURCES += $(SRC_PATH)/top/channels_decoder.sv
 VERILOG_SOURCES += $(SRC_PATH)/top/timebase.sv
 VERILOG_SOURCES += $(SRC_PATH)/top/spi_rb_interface.sv
+VERILOG_SOURCES += $(SRC_PATH)/top/cmd_decoder.sv
 VERILOG_SOURCES += $(SRC_PATH)/top/core_top.sv
 COMPILE_ARGS += --relative-includes
 else
@@ -42,7 +45,7 @@ endif
 TOPLEVEL = core_top
 
 # MODULE is the basename of the Python test file
-MODULE = new_test_top
+MODULE = test_top
 
 #COMPILE_ARGS += -DFUNCTIONAL
 EXTRA_ARGS += --trace-fst --trace-structs

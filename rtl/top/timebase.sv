@@ -24,3 +24,4 @@ module timebase #(parameter int K_RES = 32) (
 	end
 
 endmodule
+

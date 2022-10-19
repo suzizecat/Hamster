@@ -155,7 +155,7 @@ class HamsterSPIInterface(GenericDriver):
             else :
                 self._log.lmed(f"Continue write on {current_reg.name}")
             self.add_data_to_send(req.value)
-            # previous_reg = current_reg
+            previous_reg = current_reg
         await self.spi_drv.drive_csn(1,(10,"ns"))
         await self.spi_drv.is_idle.wait()
 
@@ -171,7 +171,7 @@ class HamsterSPIInterface(GenericDriver):
         self.add_data_to_send(0)
         await self.spi_drv.evt.word_done.wait()
         await self.spi_idle()
-        
+        await Timer(*self.spi_drv.csn_pulse_duration)
         if self.rb[reg.name].value != int(self.last_read_value) :
             self._log.warning(f"Mismatch in register bank value for {reg.name}: expected 0x{self.rb[reg.name].value:04X} got 0x{int(self.last_read_value):04X}")
             assert not assert_coherency , f"Mismatch in register bank value on asserted READ" 
@@ -181,4 +181,5 @@ class HamsterSPIInterface(GenericDriver):
 
     async def spi_idle(self):
         await self.spi_drv.is_idle.wait()
+        self._log.debug("     SPI IDLE detected.")
         await NextTimeStep()

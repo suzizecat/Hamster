@@ -1,0 +1,92 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Wed Sep 21 23:44:44 2022
+[*]
+[dumpfile] "/home/julien/Projets/HDL/Hamster/verif/top/dump.fst"
+[dumpfile_mtime] "Wed Sep 21 23:42:06 2022"
+[dumpfile_size] 7997
+[savefile] "/home/julien/Projets/HDL/Hamster/verif/top/test_gate.gtkw"
+[timestart] 2761000
+[size] 1920 1043
+[pos] -1 -1
+*-18.805124 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] .
+[sst_width] 483
+[signals_width] 178
+[sst_expanded] 1
+[sst_vpaned_height] 298
+@10800022
+[transaction_args] ""
+^<1 /home/julien/Projets/HDL/Hamster/global_verif/spi_decoder.py
+#{SPI} o_miso i_mosi i_spi_clk i_cs_n
+@20000
+-
+@28
+i_cs_n
+i_spi_clk
+i_mosi
+o_miso
+o_rb_read_req
+o_rb_read_valid
+o_rb_write_req
+@800200
+-Debug SPI
+@28
++{ClkRising} (3)core_top.dbg_spi[28:0]
++{ClkFalling} (4)core_top.dbg_spi[28:0]
+@800022
+#{TX CTR} (5)core_top.dbg_spi[28:0] (6)core_top.dbg_spi[28:0] (7)core_top.dbg_spi[28:0] (8)core_top.dbg_spi[28:0]
+@28
+(5)core_top.dbg_spi[28:0]
+(6)core_top.dbg_spi[28:0]
+(7)core_top.dbg_spi[28:0]
+(8)core_top.dbg_spi[28:0]
+@1001200
+-group_end
+@c00022
+#{RX CTR} (9)core_top.dbg_spi[28:0] (10)core_top.dbg_spi[28:0] (11)core_top.dbg_spi[28:0] (12)core_top.dbg_spi[28:0]
+@28
+(9)core_top.dbg_spi[28:0]
+(10)core_top.dbg_spi[28:0]
+(11)core_top.dbg_spi[28:0]
+(12)core_top.dbg_spi[28:0]
+@1401200
+-group_end
+@c00022
+#{SPI_RX} (13)core_top.dbg_spi[28:0] (14)core_top.dbg_spi[28:0] (15)core_top.dbg_spi[28:0] (16)core_top.dbg_spi[28:0] (17)core_top.dbg_spi[28:0] (18)core_top.dbg_spi[28:0] (19)core_top.dbg_spi[28:0] (20)core_top.dbg_spi[28:0] (21)core_top.dbg_spi[28:0] (22)core_top.dbg_spi[28:0] (23)core_top.dbg_spi[28:0] (24)core_top.dbg_spi[28:0] (25)core_top.dbg_spi[28:0] (26)core_top.dbg_spi[28:0] (27)core_top.dbg_spi[28:0] (28)core_top.dbg_spi[28:0] (13)core_top.dbg_spi[28:0] (14)core_top.dbg_spi[28:0] (15)core_top.dbg_spi[28:0] (16)core_top.dbg_spi[28:0] (17)core_top.dbg_spi[28:0] (18)core_top.dbg_spi[28:0] (19)core_top.dbg_spi[28:0] (20)core_top.dbg_spi[28:0] (21)core_top.dbg_spi[28:0] (22)core_top.dbg_spi[28:0] (23)core_top.dbg_spi[28:0] (24)core_top.dbg_spi[28:0] (25)core_top.dbg_spi[28:0] (26)core_top.dbg_spi[28:0] (27)core_top.dbg_spi[28:0] (28)core_top.dbg_spi[28:0]
+@800022
+#{core_top.dbg_spi[15:0]} (13)core_top.dbg_spi[28:0] (14)core_top.dbg_spi[28:0] (15)core_top.dbg_spi[28:0] (16)core_top.dbg_spi[28:0] (17)core_top.dbg_spi[28:0] (18)core_top.dbg_spi[28:0] (19)core_top.dbg_spi[28:0] (20)core_top.dbg_spi[28:0] (21)core_top.dbg_spi[28:0] (22)core_top.dbg_spi[28:0] (23)core_top.dbg_spi[28:0] (24)core_top.dbg_spi[28:0] (25)core_top.dbg_spi[28:0] (26)core_top.dbg_spi[28:0] (27)core_top.dbg_spi[28:0] (28)core_top.dbg_spi[28:0]
+@28
+(13)core_top.dbg_spi[28:0]
+(14)core_top.dbg_spi[28:0]
+(15)core_top.dbg_spi[28:0]
+(16)core_top.dbg_spi[28:0]
+(17)core_top.dbg_spi[28:0]
+(18)core_top.dbg_spi[28:0]
+(19)core_top.dbg_spi[28:0]
+(20)core_top.dbg_spi[28:0]
+(21)core_top.dbg_spi[28:0]
+(22)core_top.dbg_spi[28:0]
+(23)core_top.dbg_spi[28:0]
+(24)core_top.dbg_spi[28:0]
+(25)core_top.dbg_spi[28:0]
+(26)core_top.dbg_spi[28:0]
+(27)core_top.dbg_spi[28:0]
+(28)core_top.dbg_spi[28:0]
+@1001200
+-group_end
+@1401200
+-group_end
+@1000200
+-Debug SPI
+@800022
+core_top.dbg_spi[28:0]
+@28
+(0)core_top.dbg_spi[28:0]
+(1)core_top.dbg_spi[28:0]
+(2)core_top.dbg_spi[28:0]
+@1001200
+-group_end
+-group_end
+[pattern_trace] 1
+[pattern_trace] 0

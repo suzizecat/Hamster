@@ -15,9 +15,6 @@ module pwm_capture #(parameter K_DWIDTH = 16) (
     capture_state_t fsm_state     ;
     capture_state_t fsm_state_next;
 
-    capture_state_t [1:0] transition;
-    assign transition = {fsm_state,fsm_state_next};
-
     always_ff @(posedge i_clk or negedge i_rst_n) begin : p_seq_fsm_next
         if (~ i_rst_n ) begin
             fsm_state       <= WAITING;
@@ -25,18 +22,18 @@ module pwm_capture #(parameter K_DWIDTH = 16) (
             o_capture_value <= 0;
             o_capture_done  <= 0;
         end else begin
-            o_capture_done <= transition == {COUNTING,WAITING} & i_timebase;
+            o_capture_done <= (fsm_state == COUNTING && fsm_state_next == WAITING) & i_timebase;
             if (i_timebase) begin
                 fsm_state <= fsm_state_next;
-                if (transition == {SKIPPING,COUNTING}) begin
+                if ((fsm_state == SKIPPING && fsm_state_next == COUNTING)) begin
                     o_capture_value <= 0;
                     o_capture_start <= 1;
-                end else if (transition == {COUNTING,COUNTING}) begin
+                end else if ((fsm_state == COUNTING && fsm_state_next == COUNTING)) begin
                     o_capture_start <= 0;
                     if(~(&o_capture_value)) begin
                         o_capture_value <= o_capture_value +1;
                     end
-                end else if (transition == {SKIPPING,SKIPPING}) begin
+                end else if ((fsm_state == SKIPPING && fsm_state_next == SKIPPING)) begin
                     o_capture_start <= 0;
                     o_capture_value <= o_capture_value +1;
                 end

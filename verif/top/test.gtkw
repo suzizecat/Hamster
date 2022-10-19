@@ -1,0 +1,42 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Fri Sep 30 21:24:10 2022
+[*]
+[dumpfile] "/home/julien/Projets/HDL/Hamster/verif/top/dump.fst"
+[dumpfile_mtime] "Fri Sep 30 21:23:55 2022"
+[dumpfile_size] 16960
+[savefile] "/home/julien/Projets/HDL/Hamster/verif/top/test.gtkw"
+[timestart] 7071000
+[size] 1920 1016
+[pos] -1 -1
+*-20.201614 9428300 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] .
+[treeopen] .core_top.
+[sst_width] 233
+[signals_width] 229
+[sst_expanded] 1
+[sst_vpaned_height] 298
+@10800022
+[transaction_args] ""
+^<1 /home/julien/Projets/HDL/Hamster/global_verif/spi_decoder.py
+#{SPI} o_miso i_mosi i_spi_clk i_cs_n
+@20000
+-
+@200
+-
+-
+@28
+i_cs_n
+i_spi_clk
+i_mosi
+o_miso
+@22
+core_top.spi_command.payload[7:0]
+@28
+core_top.spi_command.to_register
+core_top.spi_command.valid
+core_top.spi_command.write
+@1001200
+-group_end
+[pattern_trace] 1
+[pattern_trace] 0

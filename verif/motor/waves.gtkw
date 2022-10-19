@@ -1,0 +1,51 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Tue May 31 19:01:57 2022
+[*]
+[dumpfile] "/home/julien/Projets/HDL/Hamster/verif/motor/dump.fst"
+[dumpfile_mtime] "Tue May 31 19:00:06 2022"
+[dumpfile_size] 72773
+[savefile] "/home/julien/Projets/HDL/Hamster/verif/motor/waves.gtkw"
+[timestart] 243700000
+[size] 1920 1016
+[pos] -1 -1
+*-21.615654 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] .
+[treeopen] .motor_control_top.
+[sst_width] 233
+[signals_width] 238
+[sst_expanded] 1
+[sst_vpaned_height] 289
+@28
+motor_control_top.i_brake
+motor_control_top.i_clk
+motor_control_top.i_enc_a
+motor_control_top.i_enc_b
+motor_control_top.i_enc_i
+motor_control_top.i_param_enc_pol
+motor_control_top.i_param_i_step[2:0]
+motor_control_top.i_param_i_step_en
+@22
+motor_control_top.i_param_pwm_max[9:0]
+@28
+motor_control_top.i_param_pwr_on_pattern_all
+motor_control_top.i_param_pwr_on_pattern_msb
+@22
+motor_control_top.i_pwm_command[9:0]
+@28
+motor_control_top.i_reverse
+motor_control_top.i_rst_n
+motor_control_top.i_speed_time_base
+@800023
+motor_control_top.o_cmd[5:0]
+@29
+(0)motor_control_top.o_cmd[5:0]
+(1)motor_control_top.o_cmd[5:0]
+(2)motor_control_top.o_cmd[5:0]
+(3)motor_control_top.o_cmd[5:0]
+(4)motor_control_top.o_cmd[5:0]
+(5)motor_control_top.o_cmd[5:0]
+@1001201
+-group_end
+[pattern_trace] 1
+[pattern_trace] 0

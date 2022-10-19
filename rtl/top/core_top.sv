@@ -1,31 +1,31 @@
 `include "debug.svh"
-
+`include "decoder.svh"
+//
 module core_top (
-	input  logic       i_clk     , //! Main clock
-	input  logic       i_rst_n   , //! Main reset
+	input  logic        i_clk          , //! Main clock
+	input  logic        i_rst_n        , //! Main reset
 	//Encoder inputs
-	input  logic       i_enc1_a  , //! Encoder 1 A
-	input  logic       i_enc1_b  , //! Encoder 1 B
-	input  logic       i_enc1_i  , //! Encoder 1 I
-	input  logic       i_enc2_a  , //! Encoder 2 A
-	input  logic       i_enc2_b  , //! Encoder 2 B
-	input  logic       i_enc2_i  , //! Encoder 2 I
+	input  logic        i_enc1_a       , //! Encoder 1 A
+	input  logic        i_enc1_b       , //! Encoder 1 B
+	input  logic        i_enc1_i       , //! Encoder 1 I
+	input  logic        i_enc2_a       , //! Encoder 2 A
+	input  logic        i_enc2_b       , //! Encoder 2 B
+	input  logic        i_enc2_i       , //! Encoder 2 I
 	// Commands
-	input  logic [3:0] i_channels, //! Brake command
+	input  logic [3:0]  i_channels     , //! Brake command
 	//Motors interfaces
-	output logic [5:0] o_cmd_m1  ,
-	output logic [5:0] o_cmd_m2  ,
+	output logic [5:0]  o_cmd_m1       ,
+	output logic [5:0]  o_cmd_m2       ,
 	// SPI interface
-	input  logic       i_cs_n    , //!
-	input  logic       i_mosi    , //!
-	input  logic       i_spi_clk , //!
-	output logic       o_miso    ,  //!
+	input  logic        i_cs_n         , //!
+	input  logic        i_mosi         , //!
+	input  logic        i_spi_clk      , //!
+	output logic        o_miso         , //!
 	// Debug outputs
-	output spi_events_t dbg_spi,
-	output logic  o_rb_read_valid, //! 
-	output logic  o_rb_read_req, //! 
-	output logic  o_rb_write_req //! 
-	
+	output spi_events_t dbg_spi        ,
+	output logic        o_rb_read_valid, //!
+	output logic        o_rb_read_req  , //!
+	output logic        o_rb_write_req   //!
 );
 
 	localparam int PWM_RES    = 8 ;
@@ -72,10 +72,12 @@ module core_top (
 
 	logic time_speed;
 
+	decoded_cmd_t spi_command;
+
 	assign dbg_spi.selected = spi_selected;
-	assign dbg_spi.rx_evt = spi_rxne;
-	assign dbg_spi.txe = spi_txe;
-	assign dbg_spi.rx_data = spi_mosi_data;
+	assign dbg_spi.rx_evt   = spi_rxne;
+	assign dbg_spi.txe      = spi_txe;
+	assign dbg_spi.rx_data  = spi_mosi_data;
 
 
 	assign radio_deadzones = {
@@ -114,28 +116,50 @@ module core_top (
 		.i_spi_clk      (i_spi_clk     ),
 		.i_cs_n         (i_cs_n        ),
 		.o_miso         (o_miso        ),
-		.o_dbg_mosi_cnt(dbg_spi.tx_cnt),
-		.o_dbg_miso_cnt(dbg_spi.rx_cnt),
-		.dgb_clk_rise(dbg_spi.clk_r),
-		.dbg_clk_fall(dbg_spi.clk_f)
+		.o_dbg_mosi_cnt (dbg_spi.tx_cnt),
+		.o_dbg_miso_cnt (dbg_spi.rx_cnt),
+		.dgb_clk_rise   (dbg_spi.clk_r ),
+		.dbg_clk_fall   (dbg_spi.clk_f )
+	);
+
+	cmd_decoder u_cmd_decode (
+		.i_clk      (i_clk        ),
+		.i_rst_n    (i_rst_n      ),
+		.i_spi_csn  (i_cs_n       ),
+		.i_spi_data (spi_mosi_data),
+		.i_spi_valid(spi_rxne     ),
+		.o_command  (spi_command  )
 	);
 
 	spi_rb_interface u_spi_rb_interface (
-		.i_clk         (i_clk         ),
-		.i_rst_n       (i_rst_n       ),
-		.mif_wr_rb     (spi_rb_wr     ),
-		.mif_rd_rb     (spi_rb_rd     ),
-		.i_spi_in_data (spi_mosi_data ),
-		.o_spi_out_data(spi_miso_data ),
-		.i_spi_rx      (spi_rxne      ),
-		.i_spi_txe     (spi_txe       ),
-		.i_csn         (~spi_selected ),
-		.o_spi_valid_tx(spi_miso_valid)
+		.i_clk             (i_clk             ),
+		.i_rst_n           (i_rst_n           ),
+		.mif_wr_rb         (spi_rb_wr         ),
+		.mif_rd_rb         (spi_rb_rd         ),
+		.i_spi_request_data(spi_rxne),
+		.i_spi_rx_data     (spi_mosi_data     ),
+		.o_spi_tx_data     (spi_miso_data     ),
+		.o_spi_tx_valid    (spi_miso_valid    ),
+		.i_command         (spi_command         )
 	);
 
-	assign o_rb_write_req = spi_rb_wr.write;
+
+	// spi_rb_interface u_spi_rb_interface (
+	// 	.i_clk         (i_clk         ),
+	// 	.i_rst_n       (i_rst_n       ),
+	// 	.mif_wr_rb     (spi_rb_wr     ),
+	// 	.mif_rd_rb     (spi_rb_rd     ),
+	// 	.i_spi_in_data (spi_mosi_data ),
+	// 	.o_spi_out_data(spi_miso_data ),
+	// 	.i_spi_rx      (spi_rxne      ),
+	// 	.i_spi_txe     (spi_txe       ),
+	// 	.i_csn         (~spi_selected ),
+	// 	.o_spi_valid_tx(spi_miso_valid)
+	// );
+
+	assign o_rb_write_req  = spi_rb_wr.write;
 	assign o_rb_read_valid = spi_rb_rd.valid;
-	assign o_rb_read_req = spi_rb_rd.read;
+	assign o_rb_read_req   = spi_rb_rd.read;
 
 	assign regbank_in.COMPID_COMP_ID     = 16'hA001;
 	assign regbank_in.COMPTEST_COMP_TEST = 16'hCAFE;
@@ -153,8 +177,8 @@ module core_top (
 	timebase #(.K_RES(14)) u_speed_timebase (
 		.i_clk  (i_clk     ),
 		.i_rst_n(i_rst_n   ),
-		.i_stop (1'b0       ),
-		.i_thr  (14'd10000   ),
+		.i_stop (1'b0      ),
+		.i_thr  (14'd10000 ),
 		.o_tick (time_speed)
 	);
 
