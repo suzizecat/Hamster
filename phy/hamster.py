@@ -27,6 +27,7 @@ def main():
         
         "/top/timebase.sv",
         "/top/channels_decoder.sv",
+        "/top/cmd_decoder.sv",
         "/top/spi_rb_interface.sv",
         "/top/core_top.sv"
     ]

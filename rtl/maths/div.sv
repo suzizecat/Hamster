@@ -84,6 +84,8 @@ module div #(
                     ac     <= ac_next;
                     q1     <= q1_next;
                 end
+            end else begin
+                 o_valid <= 0;
             end
         end
     end

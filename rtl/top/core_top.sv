@@ -11,6 +11,9 @@ module core_top (
 	input  logic        i_enc2_a       , //! Encoder 2 A
 	input  logic        i_enc2_b       , //! Encoder 2 B
 	input  logic        i_enc2_i       , //! Encoder 2 I
+	input logic  i_enc1_pos_pwm, //! 
+	input logic  i_enc2_pos_pwm, //! 
+	
 	// Commands
 	input  logic [3:0]  i_channels     , //! Brake command
 	//Motors interfaces
@@ -220,6 +223,27 @@ module core_top (
 		.o_q    (rescaled_cmd_power                      ),
 		.o_r    (                                        )
 	);
+
+	encoder_pwm_read #(
+    .K_DWIDTH          (20),
+    .K_NSTEP_PERIOD    (400)
+) u_encoder_pwm_read (
+    .i_clk             (i_clk),
+    //! System clock
+	    .i_rst_n           (i_rst_n),
+    //! System reset
+	    .i_pwm             (i_pwm),
+    //! Input PWM
+	    .i_start           (i_start),
+    //! Trigger
+	    .i_clear           (i_clear),
+    //! Clear result
+	    .o_enc_pos         (o_enc_pos),
+    //! Output result
+	    .o_cal_factor      (o_cal_factor),
+    //! Result is valid
+    .o_valid           (o_valid)
+);
 
 	motor_control_top #(.K_PWMRES(PWM_RES)) u_mot_1 (
 		.i_clk                     (i_clk                               ),
