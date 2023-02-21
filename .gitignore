@@ -10,3 +10,5 @@ results.xml
 log/
 synth/
 
+verilator/build/
+build/

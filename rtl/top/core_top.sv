@@ -224,26 +224,26 @@ module core_top (
 		.o_r    (                                        )
 	);
 
-	encoder_pwm_read #(
-    .K_DWIDTH          (20),
-    .K_NSTEP_PERIOD    (400)
-) u_encoder_pwm_read (
-    .i_clk             (i_clk),
-    //! System clock
-	    .i_rst_n           (i_rst_n),
-    //! System reset
-	    .i_pwm             (i_pwm),
-    //! Input PWM
-	    .i_start           (i_start),
-    //! Trigger
-	    .i_clear           (i_clear),
-    //! Clear result
-	    .o_enc_pos         (o_enc_pos),
-    //! Output result
-	    .o_cal_factor      (o_cal_factor),
-    //! Result is valid
-    .o_valid           (o_valid)
-);
+// 	encoder_pwm_read #(
+//     .K_DWIDTH          (20),
+//     .K_NSTEP_PERIOD    (400)
+// ) u_encoder_pwm_read (
+//     .i_clk             (i_clk),
+//     //! System clock
+// 	    .i_rst_n           (i_rst_n),
+//     //! System reset
+// 	    .i_pwm             (i_pwm),
+//     //! Input PWM
+// 	    .i_start           (i_start),
+//     //! Trigger
+// 	    .i_clear           (i_clear),
+//     //! Clear result
+// 	    .o_enc_pos         (o_enc_pos),
+//     //! Output result
+// 	    .o_cal_factor      (o_cal_factor),
+//     //! Result is valid
+//     .o_valid           (o_valid)
+// );
 
 	motor_control_top #(.K_PWMRES(PWM_RES)) u_mot_1 (
 		.i_clk                     (i_clk                               ),
