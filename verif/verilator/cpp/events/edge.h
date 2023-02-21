@@ -1,0 +1,4 @@
+#ifndef _H_INCLUDE_EDGE_EVENT
+#define _H_INCLUDE_EDGE_EVENT
+
+#endif //_H_INCLUDE_EDGE_EVENT

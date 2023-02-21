@@ -1,0 +1,6 @@
+[submodule "verif/verilator/cpp/thirdparty/fmt"]
+	path = verif/verilator/cpp/thirdparty/fmt
+	url = git@github.com:fmtlib/fmt.git
+[submodule "verif/verilator/cpp/thirdparty/spdlog"]
+	path = verif/verilator/cpp/thirdparty/spdlog
+	url = git@github.com:gabime/spdlog.git
