@@ -18,30 +18,46 @@
 #include "spdlog/pattern_formatter.h"
 #include "fmt/core.h"
 #include "sim_task_coro.h"
-#include "../events/signal_event.h"
+
 
 namespace hdl{
-
-
-
-
 
 // Forward declare Task
 class Task;
 
 
 
+struct SignalEventHolder
+{
+    SignalEventHolder() : registered_tasks(nullptr), initialized(false), registered_value(0) {};
+
+    Task* registered_tasks;
+    bool initialized;
+    CData registered_value;
+
+    void register_task(Task *t);
+    void merge_tasks(Task* tl);
+
+};
+
+
+typedef enum  EdgeKind {Rising, Falling, Any} EdgeKind;
 
 class BenchScheduler
 {
 
     struct NetEventRecords
     {
+        NetEventRecords() : got_scheduled_task(false), rising_edge(), falling_edge(), any_edge() {};
         std::unordered_map<CData*, SignalEventHolder > rising_edge;
         std::unordered_map<CData*, SignalEventHolder > falling_edge;
         std::unordered_map<CData*, SignalEventHolder > any_edge;
 
         void clear();
+        bool is_empty();
+        bool is_done();
+
+        bool got_scheduled_task;
     };
 
 
@@ -66,7 +82,7 @@ class BenchScheduler
         static BenchScheduler& get() noexcept { return _self;}
 
         void schedule(Task* evt, femtosecond delay, const bool push_last = false);
-        void schedule_net_event(std::coroutine_handle<SimTaskCoro::promise_type> evt, CData* net,EdgeKind edge = EdgeKind::Any );
+        void schedule_net_event(Task* t, CData* net, EdgeKind edge = EdgeKind::Any );
         void run_time_step();
         void run_next_event();
         void merge_nets_events();
@@ -95,10 +111,14 @@ class Task
 
     public : 
         Task(std::coroutine_handle<SimTaskCoro::promise_type> handle, std::string name = "Unnamed", bool is_virtual = false, femtosecond schedule_time = 0fs);
-        bool is_virtual() const {return _is_virtual;};
+        bool is_virtual() const {return ! ((! _is_virtual) || (_next != nullptr && ! _next->is_virtual()));};
         const std::string& get_name() const {return _name;};
+
         ~Task();
         std::coroutine_handle<SimTaskCoro::promise_type> _handle;
+        Task* insert_task(Task *evt, bool push_last = false);
+        Task* merge(Task *task_list);
+
     protected :
         femtosecond _delay;
         femtosecond _last_run_time;
@@ -109,7 +129,6 @@ class Task
         void _delete_following();
 
 };
-
 
 
 class SimTimeFormatFlag : public spdlog::custom_flag_formatter

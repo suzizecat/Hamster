@@ -7,7 +7,10 @@ if(NOT TARGET spdlog)
     find_package(spdlog REQUIRED)
 endif()
 
-find_package(fmt)
+# add_subdirectory(cpp/thirdparty/fmt)
+# add_subdirectory(cpp/thirdparty/spdlog)
+#find_package(fmt)
+
 
 add_executable(Vdut sim_main.cpp
 cpp/generator.h
@@ -17,7 +20,8 @@ cpp/hdltime.h
 cpp/clock.h
 cpp/clock.cpp
 
-cpp/events/signal_event.h
+cpp/events/edge.h
+cpp/events/edge.cpp
 cpp/events/timer.h
 cpp/events/timer.cpp
 
@@ -35,8 +39,9 @@ cpp/dut.cpp
 include_directories(Vdut cpp)
 target_link_libraries(Vdut PRIVATE fmt::fmt)
 target_link_libraries(Vdut PRIVATE spdlog::spdlog)
-set_property(TARGET Vdut PROPERTY CXX_STANDARD 20)
 
+set_property(TARGET Vdut PROPERTY CXX_STANDARD 20)
+target_compile_options(Vdut PRIVATE -fcoroutines)
 
 set(SRC_PATH $ENV{PRJ_PATH}/rtl)
 

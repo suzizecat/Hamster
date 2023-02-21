@@ -10,7 +10,7 @@
 #include  "hdltime.h"
 #include  "events/timer.h"
 #include "generator.h"
-
+#include "events/edge.h"
 #include <chrono>
 #include "hdltime.h"
 
@@ -25,9 +25,10 @@ hdl::SimTaskCoro addition()
     DUT::get().dut()->i_channels = 2;
     co_await Timer(20ns);
     
+    spdlog::info("Await clock rising edge");
     DUT::get().dut()->i_channels = 1;
-    co_await Timer(20ns);
-    
+    co_await RisingEdge(&(DUT::get().dut()->i_clk));
+    spdlog::info("Got rising edge, set to 0");
     DUT::get().dut()->i_channels = 0;
     co_await Timer(100ns);
     
@@ -35,6 +36,19 @@ hdl::SimTaskCoro addition()
     co_await Timer(10ns);
 
 }
+
+hdl::SimTaskCoro any_edge()
+{
+    using namespace hdl;
+    DUT::get().dut()->i_cs_n = 0;
+    while(true)
+    {
+        co_await AnyEdge(&(DUT::get().dut()->i_channels));
+        spdlog::info("i_channel moved");
+        DUT::get().dut()->i_cs_n ^= 1;
+    }
+}
+
 
 
 hdl::SimTaskCoro reset()
@@ -52,6 +66,7 @@ hdl::SimTaskCoro reset()
     DUT::get().dut()->i_rst_n = 1;
 
     new Task(addition(),"add",false,12ns);
+    new Task(any_edge(),"any",true,1ns);
 }
 
 hdl::SimTaskCoro clock(femtosecond period)
