@@ -3,8 +3,8 @@
 
 #include <chrono>
 
-using picosecond = std::chrono::duration<int,std::pico>;
-using femtosecond = std::chrono::duration<int,std::femto>;
+using picosecond = std::chrono::duration<long long int,std::pico>;
+using femtosecond = std::chrono::duration<long long int,std::femto>;
 
 #pragma GCC diagnostic ignored "-Wliteral-suffix"
 #pragma GCC diagnostic push

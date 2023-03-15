@@ -13,41 +13,41 @@
 #include "events/edge.h"
 #include <chrono>
 #include "hdltime.h"
+#include "sim/spi.h"
 
 #include "clock.h"
 using namespace std::chrono;
 
 
-hdl::SimTaskCoro addition()
+
+hdl::SimTaskCoro main_interaction()
 {
     using namespace hdl;
-    spdlog::info("Set inputs");
-    DUT::get().dut()->i_channels = 2;
-    co_await Timer(20ns);
+    DUT& dut = DUT::get();
+    SPI spi(&(dut.dut()->i_cs_n), &(dut.dut()->i_spi_clk), &(dut.dut()->i_mosi), &(dut.dut()->o_miso));
+    spi.reset();
+    spdlog::info("Start main");
+    co_await RisingEdge(&(dut.dut()->i_rst_n));
     
-    spdlog::info("Await clock rising edge");
-    DUT::get().dut()->i_channels = 1;
-    co_await RisingEdge(&(DUT::get().dut()->i_clk));
-    spdlog::info("Got rising edge, set to 0");
-    DUT::get().dut()->i_channels = 0;
-    co_await Timer(100ns);
-    
-    DUT::get().dut()->i_channels = 3;
-    co_await Timer(10ns);
+    spdlog::info("End of reset detected");
+    co_await Timer(10us);
 
+    spdlog::info("Read the test register");
+    
+    new Task(spi.exchange_data({0x01A9, 0x0000},false), "spi");
+    
+    spdlog::info("Await end of transaction");
+    co_await RisingEdge(&(dut.dut()->i_cs_n));
+    co_await RisingEdge(&(dut.dut()->i_clk));
+
+    new Task(spi.exchange_data({0x0100, 0x0000}));
+    co_await RisingEdge(&(dut.dut()->i_cs_n));
+
+    //
+    spdlog::info("Component ID is 0x{:04X}",spi.get_buffer().at(0));
+    spdlog::info("Transaction done");
 }
 
-hdl::SimTaskCoro any_edge()
-{
-    using namespace hdl;
-    DUT::get().dut()->i_cs_n = 0;
-    while(true)
-    {
-        co_await AnyEdge(&(DUT::get().dut()->i_channels));
-        spdlog::info("i_channel moved");
-        DUT::get().dut()->i_cs_n ^= 1;
-    }
-}
 
 
 
@@ -64,9 +64,6 @@ hdl::SimTaskCoro reset()
 
     spdlog::info("Release reset");
     DUT::get().dut()->i_rst_n = 1;
-
-    new Task(addition(),"add",false,12ns);
-    new Task(any_edge(),"any",true,1ns);
 }
 
 hdl::SimTaskCoro clock(femtosecond period)
@@ -82,12 +79,13 @@ hdl::SimTaskCoro clock(femtosecond period)
 
  int main(int argc, char** argv, char** env) {
     DUT::get().setup();
-
+    spdlog::set_level(spdlog::level::debug);
     using namespace std::chrono;
     spdlog::info("Start simulation");
 
     new hdl::Task(reset(),"rst");
     new hdl::Task(clock(5ns),"clk",true);
+    new hdl::Task(main_interaction(),"spi",false,12ns);
 
-    hdl::BenchScheduler::get().run(1us);
+    hdl::BenchScheduler::get().run(100000ns);
 }

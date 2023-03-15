@@ -3,12 +3,12 @@ from cocotb.clock import *
 from cocotb.handle import *
 from cocotb.triggers import *
 
-from vipy.bus.base import *
-from vipy.bus.spi import *
+from vipyhdl.bus.base import *
+from vipyhdl.bus.spi import *
 
-from vipy.externals.encoders import *
+from vipyhdl.externals.encoders import *
 
-from vipy.structure import GlobalEnv
+from vipyhdl.structure import GlobalEnv
 
 from vmodels import HamsterSPIInterface,Hamster
 
@@ -42,7 +42,7 @@ def spi_nop():
     return DataWord(0)
 
 
-from vipy.structure.globalenv import VipyLogAdapter
+from vipyhdl.structure.globalenv import VipyhdlLogAdapter
 
 @cocotb.test()
 async def new_struct(dut) :

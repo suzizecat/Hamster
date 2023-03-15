@@ -111,7 +111,7 @@ class Task
 
     public : 
         Task(std::coroutine_handle<SimTaskCoro::promise_type> handle, std::string name = "Unnamed", bool is_virtual = false, femtosecond schedule_time = 0fs);
-        bool is_virtual() const {return ! ((! _is_virtual) || (_next != nullptr && ! _next->is_virtual()));};
+        bool is_virtual() const ;
         const std::string& get_name() const {return _name;};
 
         ~Task();

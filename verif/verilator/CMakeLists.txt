@@ -25,6 +25,10 @@ cpp/events/edge.cpp
 cpp/events/timer.h
 cpp/events/timer.cpp
 
+cpp/sim/spi.h
+cpp/sim/spi.cpp
+
+
 # cpp/event_queue.h
 # cpp/event_queue.cpp
 

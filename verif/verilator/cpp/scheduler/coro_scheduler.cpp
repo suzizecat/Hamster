@@ -17,6 +17,15 @@ Task::Task(std::coroutine_handle<SimTaskCoro::promise_type> handle, std::string 
     BenchScheduler::get().schedule(this,schedule_time,true);
 }
 
+bool Task::is_virtual() const
+{
+    if(! _is_virtual)
+        return false;
+    if(_next == nullptr)
+        return true;
+    return _next->is_virtual();
+}
+
 Task *hdl::Task::insert_task(Task *evt, bool push_last)
 {
         femtosecond delta = evt->_delay;
@@ -31,6 +40,8 @@ Task *hdl::Task::insert_task(Task *evt, bool push_last)
             next_evt = next_evt->_next;
         }
 
+
+
         // Push to last position of same timestep is requested
         while(push_last && next_evt->_next != nullptr && next_evt->_next->_delay == 0fs)
         {
@@ -41,7 +52,7 @@ Task *hdl::Task::insert_task(Task *evt, bool push_last)
 
         
         // Should schedule the event before the next_evt
-        if(delta < next_evt->_delay)
+        if(delta <= next_evt->_delay)
         {
             evt->_delay = delta;
             evt->_next = next_evt;
@@ -123,6 +134,17 @@ hdl::BenchScheduler::~BenchScheduler()
 
 void BenchScheduler::schedule(Task *evt, femtosecond delay, const bool push_last)
 {
+    std::string schedule = fmt::format("Schedule {} in ", evt->get_name());
+    Task* t = _evt_queue;
+
+    while(t != nullptr)
+    {
+        schedule += t->get_name() + " < ";
+        t = t->_next;
+    }
+
+    //spdlog::info("{}", schedule);
+
     if(_evt_queue == nullptr)
     {
         _evt_queue = evt;
@@ -337,7 +359,11 @@ bool BenchScheduler::got_remaining_events()
     if( _evt_queue != nullptr && ! _evt_queue->is_virtual())
         return true;
 
-    return ! (_validated_netevt.is_done() && _registered_netevt.is_done());
+    bool all_event_done = _validated_netevt.is_done() && _registered_netevt.is_done();
+    if(all_event_done)
+        return false;
+    else
+        return true;
 }
 
 bool BenchScheduler::is_timestep_done() const

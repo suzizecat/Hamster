@@ -5,7 +5,7 @@ import sys
 import typing as T
 import argparse
 
-from vipy.regbank.reader import CSVReader
+from vipyhdl.regbank.reader import CSVReader
 cmds = {
     1 : "READ",
     2 : "WRITE"
@@ -20,7 +20,7 @@ def cmd_to_str(cmd : int) :
 
 
 class Decoder:
-    def __init__(self) -> None:
+    def __init__(self, csv_path = None) -> None:
         self.miso : str = ""
         self.mosi : str = ""
         self.pol  = 0
@@ -42,9 +42,12 @@ class Decoder:
         self._cmd_detail_mosi = list()
         self._cmd_detail_miso = list()
 
-        csv = CSVReader()
-        csv.read_csv("../../rtl/regbank/definition/hamster_regbank.csv")
-        self.rb = csv.current_rb
+        self.rb = None
+        if csv_path is not None :
+            sys.stderr.write(f"Reading CSV file {csv_path}\n")
+            csv = CSVReader()
+            csv.read_csv(csv_path)
+            self.rb = csv.current_rb
 
     @property
     def send_edge(self):
@@ -56,11 +59,12 @@ class Decoder:
             return "0","1"
     
     def addr_to_str(self, addr : int) :
-        reg = self.rb.get_register(addr)
-        if reg is None :
-            return f"ADDR 0x{addr:02X}"
-        else :
-            return f"{reg.name} {addr:02X}"
+        if self.rb is not None :
+            reg = self.rb.get_register(addr)
+            if reg is not None :
+                return f"{reg.name} {addr:02X}"
+        
+        return f"ADDR 0x{addr:02X}"
 
 
     def add_vector(self, time, vect : str) -> bool :
@@ -157,8 +161,10 @@ if __name__ == "__main__" :
     parser.add_argument("--clk", default = "i_spi_clk",help="CLK signal name")
     parser.add_argument("--mosi", default = "i_mosi",help="MOSI signal name")
     parser.add_argument("--miso", default = "o_miso",help="MISO signal name")
+    parser.add_argument("--csv", default = None ,help="Regbank CSV file")
 
     args = parser.parse_args()
+
     mapping_source = {
         args.csn : 0,
         args.clk : 1,
@@ -168,7 +174,7 @@ if __name__ == "__main__" :
 
     mapping_vcd = dict()
 
-    dec = Decoder()
+    dec = Decoder("/home/julien/Projets/HDL/Hamster/rtl/regbank/definition/hamster_regbank.csv")
 
     data = sys.stdin.readline()
     started = False
